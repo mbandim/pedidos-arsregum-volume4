@@ -1,266 +1,338 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Formulário de Pedido de Livros QCSP</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { background: #f4f7fa; display: flex; justify-content: center; padding: 40px 20px; }
-.container { max-width: 700px; width: 100%; background: #fff; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); padding: 30px 40px; }
-h1 { text-align: center; color: #2c3e50; font-weight: 600; margin-bottom: 8px; font-size: 1.8rem; }
-.subtitle { text-align: center; color: #7f8c8d; margin-bottom: 25px; font-size: 0.95rem; }
-.form-group { margin-bottom: 20px; }
-label { display: block; margin-bottom: 5px; color: #34495e; font-weight: 500; font-size: 0.9rem; }
-.required::after { content: ' *'; color: #e74c3c; }
-.input-group { display: flex; gap: 10px; flex-wrap: wrap; }
-input, select, button { width: 100%; padding: 12px 14px; border: 1px solid #dcdde1; border-radius: 6px; font-size: 1rem; transition: border 0.3s; }
-input:focus, select:focus { outline: none; border-color: #3498db; }
-.half { width: calc(50% - 5px); }
-.third { width: calc(33.333% - 7px); }
-.frete-btn { background: #3498db; color: #fff; border: none; cursor: pointer; padding: 12px 20px; border-radius: 6px; font-size: 1rem; transition: background 0.3s; }
-.frete-btn:hover { background: #2980b9; }
-.frete-result { margin-top: 10px; font-size: 0.95rem; color: #27ae60; font-weight: 500; }
-.total-area { background: #ecf0f1; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; font-size: 1.2rem; }
-.total-area span { font-weight: 700; color: #2c3e50; }
-.submit-btn { width: 100%; padding: 14px; background: #27ae60; color: #fff; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background 0.3s; }
-.submit-btn:hover { background: #219a52; }
-@media (max-width: 600px) {
-.container { padding: 20px; }
-.half, .third { width: 100%; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Pedido - QCSP</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .row .field {
+            flex: 1;
+            min-width: 200px;
+        }
+        .field {
+            margin-bottom: 15px;
+        }
+        .field label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .field input, .field select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        .field input:focus, .field select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        .field .required::after {
+            content: " *";
+            color: red;
+        }
+        .btn-calc {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-calc:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-submit:hover {
+            background: #128C7E;
+        }
+        .totals {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .totals.active {
+            display: block;
+        }
+        .totals p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        .totals .total-geral {
+            font-weight: bold;
+            font-size: 20px;
+            color: #333;
+        }
+        .error-message {
+            color: red;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        .success-message {
+            color: green;
+            font-size: 13px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            .row {
+                flex-direction: column;
+            }
+            .row .field {
+                min-width: auto;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-<h1>Pedido de Livros QCSP</h1>
-<p class="subtitle">Preencha os dados abaixo para solicitar seus exemplares</p>
+    <div class="container">
+        <h1>📚 Pedido de Livros QCSP</h1>
+        <p class="subtitle">Preencha todos os campos obrigatórios (*)</p>
+        <form id="orderForm">
+            <div class="row">
+                <div class="field">
+                    <label class="required">Nome completo</label>
+                    <input type="text" id="nome" required>
+                </div>
+                <div class="field">
+                    <label class="required">E-mail</label>
+                    <input type="email" id="email" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label class="required">Telefone (com DDD)</label>
+                    <input type="tel" id="telefone" placeholder="(XX) XXXXX-XXXX" required>
+                </div>
+                <div class="field">
+                    <label class="required">CEP</label>
+                    <input type="text" id="cep" placeholder="XXXXX-XXX" maxlength="9" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label class="required">Logradouro</label>
+                    <input type="text" id="logradouro" required>
+                </div>
+                <div class="field">
+                    <label class="required">Número</label>
+                    <input type="text" id="numero" required>
+                </div>
+            </div>
+            <div class="field">
+                <label>Complemento</label>
+                <input type="text" id="complemento">
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label class="required">Cidade</label>
+                    <input type="text" id="cidade" required>
+                </div>
+                <div class="field">
+                    <label class="required">Estado</label>
+                    <select id="estado" required>
+                        <option value="">Selecione</option>
+                        <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label>Nome da Loja</label>
+                    <input type="text" id="nomeLoja">
+                </div>
+                <div class="field">
+                    <label>Número da Loja</label>
+                    <input type="text" id="numeroLoja">
+                </div>
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label>Potência</label>
+                    <input type="text" id="potencia">
+                </div>
+                <div class="field">
+                    <label class="required">Quantidade de exemplares do volume 4</label>
+                    <input type="number" id="quantidade" min="1" value="1" required>
+                </div>
+            </div>
+            <!-- Botão de cálculo -->
+            <button type="button" class="btn-calc" id="calcularBtn">Calcular valor total (incluindo o frete)</button>
+            <!-- Área de totais -->
+            <div class="totals" id="totalsArea">
+                <p>Valor dos livros: <span id="valorLivros">R$ 0,00</span></p>
+                <p>Frete: <span id="valorFrete">R$ 0,00</span></p>
+                <p class="total-geral">Valor total geral: <span id="valorTotal">R$ 0,00</span></p>
+            </div>
+            <!-- Mensagem de erro/sucesso -->
+            <div id="message"></div>
+            <!-- Botão de envio WhatsApp -->
+            <button type="button" class="btn-submit" id="submitBtn">Enviar pedido via WhatsApp</button>
+        </form>
+    </div>
+    <script>
+        // Máscara de CEP
+        document.getElementById('cep').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 5) {
+                value = value.substring(0,5) + '-' + value.substring(5,8);
+            }
+            e.target.value = value;
+        });
 
-<form id="orderForm">
-<div class="form-group">
-<label for="nome" class="required">Nome completo</label>
-<input type="text" id="nome" required>
-</div>
+        // Cálculo do total e frete
+        document.getElementById('calcularBtn').addEventListener('click', function() {
+            const cep = document.getElementById('cep').value.replace(/\D/g, '');
+            const qtd = parseInt(document.getElementById('quantidade').value);
+            const errorDiv = document.getElementById('message');
+            errorDiv.innerHTML = '';
 
-<div class="form-group">
-<label for="email" class="required">E-mail</label>
-<input type="email" id="email" required>
-</div>
+            // Validações
+            if (cep.length !== 8) {
+                errorDiv.innerHTML = '<div class="error-message">CEP inválido. Deve conter 8 dígitos.</div>';
+                return;
+            }
+            if (isNaN(qtd) || qtd < 1) {
+                errorDiv.innerHTML = '<div class="error-message">Quantidade inválida.</div>';
+                return;
+            }
 
-<div class="form-group">
-<label for="telefone" class="required">Telefone (com DDD)</label>
-<input type="tel" id="telefone" placeholder="(XX) XXXXX-XXXX" required>
-</div>
+            // Cálculo
+            const valorLivro = 120.00;
+            const valorLivros = qtd * valorLivro;
+            let frete = (qtd >= 3) ? 0 : 15.00;
+            const total = valorLivros + frete;
 
-<div class="form-group">
-<label for="cep" class="required">CEP</label>
-<div class="input-group">
-<input type="text" id="cep" placeholder="XXXXX-XXX" style="flex:1;" required>
-<button type="button" id="freteBtn" class="frete-btn">Calcular Frete</button>
-</div>
-<div id="freteResult" class="frete-result"></div>
-</div>
+            // Exibir totais
+            document.getElementById('valorLivros').textContent = 'R$ ' + valorLivros.toFixed(2).replace('.',',');
+            document.getElementById('valorFrete').textContent = 'R$ ' + frete.toFixed(2).replace('.',',');
+            document.getElementById('valorTotal').textContent = 'R$ ' + total.toFixed(2).replace('.',',');
+            document.getElementById('totalsArea').classList.add('active');
+        });
 
-<div class="form-group">
-<label for="logradouro" class="required">Logradouro (Rua, Av. etc)</label>
-<input type="text" id="logradouro" required>
-</div>
+        // Envio WhatsApp
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            // Validar campos obrigatórios
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const cep = document.getElementById('cep').value.trim();
+            const logradouro = document.getElementById('logradouro').value.trim();
+            const numero = document.getElementById('numero').value.trim();
+            const cidade = document.getElementById('cidade').value.trim();
+            const estado = document.getElementById('estado').value;
+            const qtd = document.getElementById('quantidade').value.trim();
 
-<div class="form-group">
-<label for="numero" class="required">Número</label>
-<input type="text" id="numero" required>
-</div>
+            if (!nome || !email || !telefone || !cep || !logradouro || !numero || !cidade || !estado || !qtd) {
+                document.getElementById('message').innerHTML = '<div class="error-message">Preencha todos os campos obrigatórios.</div>';
+                return;
+            }
 
-<div class="form-group">
-<label for="complemento">Complemento</label>
-<input type="text" id="complemento">
-</div>
+            // Cálculo para incluir na mensagem
+            const cepDigits = cep.replace(/\D/g, '');
+            const qtdNum = parseInt(qtd);
+            const valorLivro = 120.00;
+            const valorLivros = qtdNum * valorLivro;
+            let frete = (qtdNum >= 3) ? 0 : 15.00;
+            const total = valorLivros + frete;
 
-<div class="form-group">
-<label for="cidade" class="required">Cidade</label>
-<input type="text" id="cidade" required>
-</div>
+            // Montar mensagem
+            let msg = `*Pedido de Livros QCSP*\n\n`;
+            msg += `*Nome:* ${nome}\n`;
+            msg += `*E-mail:* ${email}\n`;
+            msg += `*Telefone:* ${telefone}\n`;
+            msg += `*CEP:* ${cep}\n`;
+            msg += `*Logradouro:* ${logradouro}, ${numero}\n`;
+            const complemento = document.getElementById('complemento').value.trim();
+            if (complemento) msg += `*Complemento:* ${complemento}\n`;
+            msg += `*Cidade:* ${cidade}\n`;
+            msg += `*Estado:* ${estado}\n`;
+            const nomeLoja = document.getElementById('nomeLoja').value.trim();
+            if (nomeLoja) msg += `*Nome da Loja:* ${nomeLoja}\n`;
+            const numeroLoja = document.getElementById('numeroLoja').value.trim();
+            if (numeroLoja) msg += `*Número da Loja:* ${numeroLoja}\n`;
+            const potencia = document.getElementById('potencia').value.trim();
+            if (potencia) msg += `*Potência:* ${potencia}\n`;
+            msg += `*Quantidade de exemplares (vol 4):* ${qtdNum}\n`;
+            msg += `*Valor dos livros:* R$ ${valorLivros.toFixed(2).replace('.',',')}\n`;
+            msg += `*Frete:* R$ ${frete.toFixed(2).replace('.',',')}\n`;
+            msg += `*Total:* R$ ${total.toFixed(2).replace('.',',')}\n\n`;
+            msg += `*Instruções de pagamento:*\n`;
+            msg += `PIX (chave): contato@qcsp333.gov.br\n`;
+            msg += `Após o pagamento, enviar comprovante para este WhatsApp.`;
 
-<div class="form-group">
-<label for="estado" class="required">Estado</label>
-<select id="estado" required>
-<option value="">Selecione...</option>
-<option value="AC">AC</option>
-<option value="AL">AL</option>
-<option value="AP">AP</option>
-<option value="AM">AM</option>
-<option value="BA">BA</option>
-<option value="CE">CE</option>
-<option value="DF">DF</option>
-<option value="ES">ES</option>
-<option value="GO">GO</option>
-<option value="MA">MA</option>
-<option value="MT">MT</option>
-<option value="MS">MS</option>
-<option value="MG">MG</option>
-<option value="PA">PA</option>
-<option value="PB">PB</option>
-<option value="PR">PR</option>
-<option value="PE">PE</option>
-<option value="PI">PI</option>
-<option value="RJ">RJ</option>
-<option value="RN">RN</option>
-<option value="RS">RS</option>
-<option value="RO">RO</option>
-<option value="RR">RR</option>
-<option value="SC">SC</option>
-<option value="SP">SP</option>
-<option value="SE">SE</option>
-<option value="TO">TO</option>
-</select>
-</div>
-
-<div class="form-group">
-<label for="loja_nome">Nome da Loja</label>
-<input type="text" id="loja_nome">
-</div>
-
-<div class="form-group">
-<label for="loja_numero">Número da Loja</label>
-<input type="text" id="loja_numero">
-</div>
-
-<div class="form-group">
-<label for="potencia">Potência</label>
-<input type="text" id="potencia">
-</div>
-
-<div class="form-group">
-<label for="quantidade" class="required">Quantidade de exemplares do volume 4 * (R$ 120,00 cada)</label>
-<input type="number" id="quantidade" min="1" required>
-</div>
-
-<div class="total-area">
-<strong>Valor total dos livros:</strong> R$ <span id="totalLivros">0,00</span><br>
-<strong>Frete:</strong> <span id="freteDisplay">Calculando...</span>
-</div>
-
-<button type="submit" class="submit-btn">Enviar Pedido via WhatsApp</button>
-</form>
-</div>
-
-<script>
-const cepInput = document.getElementById('cep');
-const freteBtn = document.getElementById('freteBtn');
-const freteResult = document.getElementById('freteResult');
-const quantidadeInput = document.getElementById('quantidade');
-const totalLivrosSpan = document.getElementById('totalLivros');
-const freteDisplay = document.getElementById('freteDisplay');
-let freteCalculado = 0;
-
-// Máscara CEP
-cepInput.addEventListener('input', function(e) {
-let value = e.target.value.replace(/\D/g, '');
-if (value.length > 5) {
-value = value.substring(0, 5) + '-' + value.substring(5, 8);
-}
-e.target.value = value;
-});
-
-// Calcular frete
-freteBtn.addEventListener('click', function() {
-const cep = cepInput.value.replace(/\D/g, '');
-if (cep.length !== 8) {
-freteResult.textContent = 'CEP inválido. Informe 8 dígitos.';
-freteResult.style.color = '#e74c3c';
-return;
-}
-const quantidade = parseInt(quantidadeInput.value) || 0;
-let frete = 0;
-if (quantidade >= 3) {
-frete = 0;
- freteResult.textContent = 'Frete grátis para 3 ou mais exemplares!';
-} else {
-// Simulação de frete: R$ 15,00 para remessa registrada simples a partir de CEP 18025-160
-frete = 15.00;
- freteResult.textContent = 'Frete: R$ 15,00 (remessa registrada simples)';
-}
-freteResult.style.color = '#27ae60';
-freteCalculado = frete;
-updateTotals();
-});
-
-// Atualizar totais
-function updateTotals() {
-const qtd = parseInt(quantidadeInput.value) || 0;
-const totalLivros = qtd * 120;
-totalLivrosSpan.textContent = totalLivros.toFixed(2).replace('.', ',');
-if (freteCalculado === 0 && qtd >= 3) {
-freteDisplay.textContent = 'Grátis';
-} else if (freteCalculado > 0) {
-freteDisplay.textContent = 'R$ ' + freteCalculado.toFixed(2).replace('.', ',');
-} else {
-freteDisplay.textContent = 'Calcule o frete';
-}
-}
-
-quantidadeInput.addEventListener('input', function() {
-// Se quantidade >=3 e frete não calculado, podemos sugerir grátis, mas é melhor manter lógica
-if (parseInt(this.value) >= 3 && freteCalculado === 0) {
-freteCalculado = 0;
- freteResult.textContent = 'Frete grátis para 3 ou mais exemplares!';
- freteResult.style.color = '#27ae60';
-}
-updateTotals();
-});
-
-// Envio do formulário
-document.getElementById('orderForm').addEventListener('submit', function(e) {
-e.preventDefault();
-
-const nome = document.getElementById('nome').value.trim();
-const email = document.getElementById('email').value.trim();
-const telefone = document.getElementById('telefone').value.trim();
-const cep = document.getElementById('cep').value.trim();
-const logradouro = document.getElementById('logradouro').value.trim();
-const numero = document.getElementById('numero').value.trim();
-const complemento = document.getElementById('complemento').value.trim();
-const cidade = document.getElementById('cidade').value.trim();
-const estado = document.getElementById('estado').value;
-const lojaNome = document.getElementById('loja_nome').value.trim();
-const lojaNumero = document.getElementById('loja_numero').value.trim();
-const potencia = document.getElementById('potencia').value.trim();
-const quantidade = document.getElementById('quantidade').value.trim();
-
-if (!nome || !email || !telefone || !cep || !logradouro || !numero || !cidade || !estado || !quantidade) {
-alert('Por favor, preencha todos os campos obrigatórios.');
-return;
-}
-
-const qtdNum = parseInt(quantidade);
-const totalLivrosValor = qtdNum * 120;
-const freteValor = freteCalculado;
-const totalGeral = totalLivrosValor + freteValor;
-
-let mensagem = `*Pedido de Livros QCSP*\n\n`;
-mensagem += `*Nome:* ${nome}\n`;
-mensagem += `*E-mail:* ${email}\n`;
-mensagem += `*Telefone:* ${telefone}\n`;
-mensagem += `*Endereço de Entrega:*\n`;
-mensagem += `Logradouro: ${logradouro}, Nº ${numero}`;
-if (complemento) mensagem += `, Complemento: ${complemento}`;
-mensagem += `\nCEP: ${cep}`;
-mensagem += `\nCidade: ${cidade} - ${estado}\n\n`;
-if (lojaNome) mensagem += `*Loja:* ${lojaNome}\n`;
-if (lojaNumero) mensagem += `*Número da Loja:* ${lojaNumero}\n`;
-if (potencia) mensagem += `*Potência:* ${potencia}\n`;
-mensagem += `*Quantidade:* ${quantidade} exemplar(es)\n`;
-mensagem += `*Valor dos Livros:* R$ ${totalLivrosValor.toFixed(2).replace('.', ',')}\n`;
-mensagem += `*Frete:* ${freteValor === 0 ? 'Grátis' : 'R$ ' + freteValor.toFixed(2).replace('.', ',')}\n`;
-mensagem += `*Total:* R$ ${totalGeral.toFixed(2).replace('.', ',')}\n\n`;
-mensagem += `*Instruções de Pagamento:*\n`;
-mensagem += `Pagamento via PIX para: contato@qcsp333.gov.br\n`;
-mensagem += `Após o pagamento, envie o comprovante para este WhatsApp.`;
-
-const numeroWhatsApp = '5512991513554'; // (12) 99151-3554
-const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`;
-window.open(url, '_blank');
-});
-</script>
+            const numeroWhats = '5512991513554'; // (12) 99151-3554 -> 5512991513554
+            const url = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        });
+    </script>
 </body>
 </html>
