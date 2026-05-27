@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedido de Livros - QCSP</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      padding: 40px;
+      max-width: 550px;
+      width: 100%;
+      transition: transform 0.3s ease;
+    }
+    .container:hover {
+      transform: translateY(-5px);
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 1.8em;
+      border-bottom: 3px solid #3498db;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #34495e;
+      font-weight: 600;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: border-color 0.3s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .cep-container {
+      display: flex;
+      gap: 10px;
+    }
+    .cep-container input {
+      flex: 1;
+    }
+    .cep-container button {
+      padding: 12px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .cep-container button:hover {
+      background-color: #2980b9;
+    }
+    .frete-result {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #f0f8ff;
+      border-radius: 8px;
+      border-left: 5px solid #3498db;
+      display: none;
+    }
+    .frete-result.show {
+      display: block;
+    }
+    .btn-whatsapp {
+      width: 100%;
+      padding: 15px;
+      background-color: #25D366;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+      margin-top: 10px;
+    }
+    .btn-whatsapp:hover {
+      background-color: #1DA851;
+      transform: scale(1.02);
+    }
+    .btn-whatsapp i {
+      margin-right: 10px;
+    }
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #7f8c8d;
+      font-size: 0.9em;
+    }
+  </style>
+  <!-- Font Awesome for WhatsApp icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>📚 Pedido de Livros</h1>
+    <form id="orderForm">
+      <div class="form-group">
+        <label for="nome">Nome completo *</label>
+        <input type="text" id="nome" name="nome" required placeholder="Seu nome">
+      </div>
+      <div class="form-group">
+        <label for="livro">Livro desejado *</label>
+        <input type="text" id="livro" name="livro" required placeholder="Título do livro">
+      </div>
+      <div class="form-group">
+        <label for="quantidade">Quantidade *</label>
+        <input type="number" id="quantidade" name="quantidade" min="1" value="1" required>
+      </div>
+      <div class="form-group">
+        <label for="endereco">Endereço de entrega *</label>
+        <textarea id="endereco" name="endereco" required placeholder="Rua, número, bairro, cidade, estado"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="cep">CEP (para cálculo de frete)</label>
+        <div class="cep-container">
+          <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9">
+          <button type="button" id="calcularFrete">Calcular Frete</button>
+        </div>
+        <div id="freteResult" class="frete-result">
+          <strong>Valor do frete:</strong> <span id="valorFrete">R$ 0,00</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="observacoes">Observações (opcional)</label>
+        <textarea id="observacoes" name="observacoes" placeholder="Alguma informação adicional?"></textarea>
+      </div>
+      <button type="submit" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Enviar Pedido via WhatsApp</button>
+    </form>
+    <footer>
+      <p>QCSP - Qualidade e Confiança em Serviços e Produtos</p>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('calcularFrete').addEventListener('click', function() {
+      const cep = document.getElementById('cep').value.replace(/\D/g, '');
+      if (cep.length !== 8) {
+        alert('Por favor, insira um CEP válido com 8 dígitos.');
+        return;
+      }
+      // Simulação de cálculo de frete (em produção, consultar API dos Correios)
+      const valorFrete = (Math.random() * 30 + 10).toFixed(2);
+      document.getElementById('valorFrete').textContent = `R$ ${valorFrete.replace('.', ',')}`;
+      document.getElementById('freteResult').classList.add('show');
+    });
+
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const nome = document.getElementById('nome').value.trim();
+      const livro = document.getElementById('livro').value.trim();
+      const quantidade = document.getElementById('quantidade').value;
+      const endereco = document.getElementById('endereco').value.trim();
+      const cep = document.getElementById('cep').value.trim();
+      const observacoes = document.getElementById('observacoes').value.trim();
+
+      if (!nome || !livro || !endereco) {
+        alert('Preencha todos os campos obrigatórios.');
+        return;
+      }
+
+      const mensagem = `Olá! Gostaria de fazer um pedido de livro:%0A%0A` +
+                       `*Nome:* ${nome}%0A` +
+                       `*Livro:* ${livro}%0A` +
+                       `*Quantidade:* ${quantidade}%0A` +
+                       `*Endereço:* ${endereco}%0A` +
+                       `*CEP:* ${cep}%0A` +
+                       `*Observações:* ${observacoes}`;
+
+      // Número do WhatsApp (substitua pelo número real)
+      const numeroWhatsApp = '5511999999999';
+      const url = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensagem}`;
+      window.open(url, '_blank');
+    });
+
+    // Máscara para CEP
+    document.getElementById('cep').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 5) {
+        value = value.substring(0, 5) + '-' + value.substring(5, 8);
+      }
+      e.target.value = value;
+    });
+  </script>
+</body>
+</html>
