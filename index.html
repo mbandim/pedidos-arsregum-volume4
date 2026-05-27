@@ -333,6 +333,46 @@
             const url = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(msg)}`;
             window.open(url, '_blank');
         });
+
+// Cole a URL que você copiou do Make.com aqui
+const urlWebhook = "SUA_URL_DO_WEBHOOK_AQUI"; 
+
+const dadosPedido = {
+    nome: nome,
+    email: email,
+    telefone: telefone,
+    cep: cep,
+    logradouro: logradouro,
+    numero: numero,
+    complemento: complemento,
+    cidade: cidade,
+    estado: estado,
+    lojaNome: nomeLoja,
+    lojaNumero: numeroLoja,
+    potencia: potencia,
+    quantidade: qtdNum,
+    valorLivros: totalLivrosValor,
+    frete: freteValor,
+    totalGeral: totalGeral
+};
+
+// Envia os dados para o Make de forma silenciosa antes de abrir o WhatsApp
+fetch(urlWebhook, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(dadosPedido)
+}).then(() => {
+    // Abre o WhatsApp normalmente após enviar os dados para a planilha
+    window.open(url, '_blank');
+}).catch(err => {
+    console.error("Erro ao salvar dados:", err);
+    // Abre o WhatsApp mesmo se houver erro para não travar o usuário
+    window.open(url, '_blank');
+});
+
+        
     </script>
 </body>
 </html>
