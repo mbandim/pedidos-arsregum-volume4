@@ -3,244 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ars Regum - Vol. 4 - Solicitação de Exemplares</title>
+    <title>Pedido Ars Regum Vol 4</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
-            max-width: 700px;
-            width: 100%;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 8px;
-            font-size: 28px;
-        }
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        .row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        .row .field {
-            flex: 1;
-            min-width: 200px;
-        }
-        .field {
-            margin-bottom: 15px;
-        }
-        .field label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        .field input, .field select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-        .field input:focus, .field select:focus {
-            border-color: #667eea;
-            outline: none;
-        }
-        .field .required::after {
-            content: " *";
-            color: red;
-        }
-        .btn-calc {
-            display: block;
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            margin-bottom: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-calc:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        .btn-submit {
-            display: block;
-            width: 100%;
-            padding: 16px;
-            background: #25D366;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .btn-submit:hover {
-            background: #128C7E;
-        }
-        .totals {
-            background: #f9f9f9;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            display: none;
-        }
-        .totals.active {
-            display: block;
-        }
-        .totals p {
-            margin: 5px 0;
-            font-size: 16px;
-        }
-        .totals .total-geral {
-            font-weight: bold;
-            font-size: 20px;
-            color: #333;
-        }
-        .error-message {
-            color: red;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-        .success-message {
-            color: green;
-            font-size: 13px;
-        }
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-            .row {
-                flex-direction: column;
-            }
-            .row .field {
-                min-width: auto;
-            }
-        }
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f9; }
+        form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin-top: 15px; }
+        button:hover { background-color: #218838; }
+        #total { margin-top: 15px; font-size: 1.2em; font-weight: bold; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📚 Ars Regum - Vol. 4 - Solicitação de Exemplares</h1>
-        <p class="subtitle">Preencha todos os campos obrigatórios (*)</p>
-        <form id="orderForm">
-            <div class="row">
-                <div class="field">
-                    <label class="required">Nome completo</label>
-                    <input type="text" id="nome" required>
-                </div>
-                <div class="field">
-                    <label class="required">E-mail</label>
-                    <input type="email" id="email" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="field">
-                    <label class="required">Telefone (com DDD)</label>
-                    <input type="tel" id="telefone" placeholder="(XX) XXXXX-XXXX" required>
-                </div>
-                <div class="field">
-                    <label class="required">CEP</label>
-                    <input type="text" id="cep" placeholder="XXXXX-XXX" maxlength="9" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="field">
-                    <label class="required">Logradouro</label>
-                    <input type="text" id="logradouro" required>
-                </div>
-                <div class="field">
-                    <label class="required">Número</label>
-                    <input type="text" id="numero" required>
-                </div>
-            </div>
-            <div class="field">
-                <label>Complemento</label>
-                <input type="text" id="complemento">
-            </div>
-            <div class="row">
-                <div class="field">
-                    <label class="required">Cidade</label>
-                    <input type="text" id="cidade" required>
-                </div>
-                <div class="field">
-                    <label class="required">Estado</label>
-                    <select id="estado" required>
-                        <option value="">Selecione</option>
-                        <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="field">
-                    <label>Nome da Loja</label>
-                    <input type="text" id="nomeLoja">
-                </div>
-                <div class="field">
-                    <label>Número da Loja</label>
-                    <input type="text" id="numeroLoja">
-                </div>
-            </div>
-            <div class="row">
-                <div class="field">
-                    <label>Potência</label>
-                    <input type="text" id="potencia">
-                </div>
-                <div class="field">
-                    <label class="required">Quantidade de exemplares do volume 4</label>
-                    <input type="number" id="quantidade" min="1" value="1" required>
-                </div>
-            </div>
-            <!-- Botão de cálculo -->
-            <button type="button" class="btn-calc" id="calcularBtn">Calcular valor total (incluindo o frete)</button>
-            <!-- Área de totais -->
-            <div class="totals" id="totalsArea">
-                <p>Valor dos livros: <span id="valorLivros">R$ 0,00</span></p>
-                <p>Frete: <span id="valorFrete">R$ 0,00</span></p>
-                <p class="total-geral">Valor total geral: <span id="valorTotal">R$ 0,00</span></p>
-            </div>
-            <!-- Mensagem de erro/sucesso -->
-            <div id="message"></div>
-            <!-- Botão de envio WhatsApp -->
-            <button type="button" class="btn-submit" id="submitBtn">Enviar pedido via WhatsApp</button>
-        </form>
-    </div>
+    <h1>Pedido Ars Regum Vol 4</h1>
+    <form id="pedidoForm">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required>
+
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="telefone">Telefone (WhatsApp):</label>
+        <input type="tel" id="telefone" name="telefone" placeholder="(11) 99999-8888" required>
+
+        <label for="endereco">Endereço:</label>
+        <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro" required>
+
+        <label for="cep">CEP:</label>
+        <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9" required>
+
+        <label for="cidade">Cidade:</label>
+        <input type="text" id="cidade" name="cidade" required>
+
+        <label for="estado">Estado:</label>
+        <select id="estado" name="estado" required>
+            <option value="">Selecione</option>
+            <option value="AC">AC</option>
+            <option value="AL">AL</option>
+            <option value="AP">AP</option>
+            <option value="AM">AM</option>
+            <option value="BA">BA</option>
+            <option value="CE">CE</option>
+            <option value="DF">DF</option>
+            <option value="ES">ES</option>
+            <option value="GO">GO</option>
+            <option value="MA">MA</option>
+            <option value="MT">MT</option>
+            <option value="MS">MS</option>
+            <option value="MG">MG</option>
+            <option value="PA">PA</option>
+            <option value="PB">PB</option>
+            <option value="PR">PR</option>
+            <option value="PE">PE</option>
+            <option value="PI">PI</option>
+            <option value="RJ">RJ</option>
+            <option value="RN">RN</option>
+            <option value="RS">RS</option>
+            <option value="RO">RO</option>
+            <option value="RR">RR</option>
+            <option value="SC">SC</option>
+            <option value="SP">SP</option>
+            <option value="SE">SE</option>
+            <option value="TO">TO</option>
+        </select>
+
+        <label for="quantidade">Quantidade:</label>
+        <input type="number" id="quantidade" name="quantidade" min="1" value="1" required>
+
+        <label for="frete">Frete (R$):</label>
+        <input type="number" id="frete" name="frete" min="0" step="0.01" value="0" required>
+
+        <button type="button" onclick="calcularTotal()">Calcular valor total (incluindo o frete)</button>
+        <div id="total">Total: R$ 0,00</div>
+
+        <button type="button" onclick="abrirWhatsApp()">Enviar Pedido via WhatsApp</button>
+    </form>
+
     <script>
-        // Máscara de CEP
-        document.getElementById('cep').addEventListener('input', function(e) {
+        // Máscara para CEP
+        document.getElementById('cep').addEventListener('input', function (e) {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length > 5) {
                 value = value.substring(0,5) + '-' + value.substring(5,8);
@@ -248,132 +90,54 @@
             e.target.value = value;
         });
 
-        // Cálculo do total e frete
-        document.getElementById('calcularBtn').addEventListener('click', function() {
-            const cep = document.getElementById('cep').value.replace(/\D/g, '');
-            const qtd = parseInt(document.getElementById('quantidade').value);
-            const errorDiv = document.getElementById('message');
-            errorDiv.innerHTML = '';
+        // Função para calcular o total
+        function calcularTotal() {
+            const quantidade = parseInt(document.getElementById('quantidade').value) || 0;
+            const frete = parseFloat(document.getElementById('frete').value) || 0;
+            const precoUnitario = 97.00; // preço fictício - ajuste conforme necessário
+            const total = (quantidade * precoUnitario) + frete;
+            document.getElementById('total').innerText = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
 
-            // Validações
-            if (cep.length !== 8) {
-                errorDiv.innerHTML = '<div class="error-message">CEP inválido. Deve conter 8 dígitos.</div>';
+        // Função para abrir WhatsApp com os dados do pedido
+        function abrirWhatsApp() {
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const endereco = document.getElementById('endereco').value.trim();
+            const cep = document.getElementById('cep').value.trim();
+            const cidade = document.getElementById('cidade').value.trim();
+            const estado = document.getElementById('estado').value;
+            const quantidade = document.getElementById('quantidade').value;
+            const frete = document.getElementById('frete').value;
+            const total = document.getElementById('total').innerText.replace('Total: ', '');
+
+            if (!nome || !endereco || !cep || !cidade || !estado) {
+                alert('Preencha todos os campos obrigatórios!');
                 return;
             }
-            if (isNaN(qtd) || qtd < 1) {
-                errorDiv.innerHTML = '<div class="error-message">Quantidade inválida.</div>';
-                return;
-            }
 
-            // Cálculo
-            const valorLivro = 120.00;
-            const valorLivros = qtd * valorLivro;
-            let frete = (qtd >= 3) ? 0 : 15.00;
-            const total = valorLivros + frete;
+            const msg = `Olá, gostaria de fazer um pedido do Ars Regum Vol 4.\n\n` +
+                        `Nome: ${nome}\n` +
+                        `E-mail: ${email}\n` +
+                        `Telefone: ${telefone}\n` +
+                        `Endereço: ${endereco}\n` +
+                        `CEP: ${cep}\n` +
+                        `Cidade: ${cidade}\n` +
+                        `Estado: ${estado}\n` +
+                        `Quantidade: ${quantidade}\n` +
+                        `Frete: R$ ${parseFloat(frete).toFixed(2)}\n` +
+                        `Total: ${total}`;
 
-            // Exibir totais
-            document.getElementById('valorLivros').textContent = 'R$ ' + valorLivros.toFixed(2).replace('.',',');
-            document.getElementById('valorFrete').textContent = 'R$ ' + frete.toFixed(2).replace('.',',');
-            document.getElementById('valorTotal').textContent = 'R$ ' + total.toFixed(2).replace('.',',');
-            document.getElementById('totalsArea').classList.add('active');
-        });
+            // Número do WhatsApp (substitua pelo número correto com DDI e DDD, sem espaços)
+            const numero = '5511999999999'; // exemplo
+            const url = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
 
-        // Envio dos dados para a planilha e depois WhatsApp
-document.getElementById('submitBtn').addEventListener('click', function() {
-    // Validar campos obrigatórios
-    const nome = document.getElementById('nome').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const telefone = document.getElementById('telefone').value.trim();
-    const cep = document.getElementById('cep').value.trim();
-    const logradouro = document.getElementById('logradouro').value.trim();
-    const numero = document.getElementById('numero').value.trim();
-    const cidade = document.getElementById('cidade').value.trim();
-    const estado = document.getElementById('estado').value;
-    const qtd = document.getElementById('quantidade').value.trim();
-
-    if (!nome || !email || !telefone || !cep || !logradouro || !numero || !cidade || !estado || !qtd) {
-        document.getElementById('message').innerHTML = '<div class="error-message">Preencha todos os campos obrigatórios antes de enviar.</div>';
-        return;
-    }
-
-    // Cálculos dos valores
-    const qtdNum = parseInt(qtd);
-    const valorLivros = qtdNum * 120;
-    const frete = (qtdNum >= 3) ? 0 : 15;
-    const totalGeral = valorLivros + frete;
-
-    // Dados estruturados para a planilha (os nomes devem bater com as colunas da planilha)
-    const dadosPedido = {
-        Data: new Date().toLocaleString('pt-BR'),
-        Nome: nome,
-        Email: email,
-        Telefone: telefone,
-        CEP: cep,
-        Logradouro: logradouro,
-        Numero: numero,
-        Complemento: document.getElementById('complemento').value.trim(),
-        Cidade: cidade,
-        Estado: estado,
-        Loja_Nome: document.getElementById('nomeLoja').value.trim(),
-        Loja_Numero: document.getElementById('numeroLoja').value.trim(),
-        Potencia: document.getElementById('potencia').value.trim(),
-        Quantidade: qtdNum,
-        Valor_Livros: valorLivros,
-        Frete: frete,
-        Total_Geral: totalGeral
-    };
-
-    // Cole aqui o link que você copiou do Sheet Monkey
-    const urlSheetMonkey = "COLE_AQUI_O_SEU_LINK_DO_SHEET_MONKEY"; 
-
-    // Envia para a planilha de forma invisível
-    fetch(urlSheetMonkey, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dadosPedido)
-    }).then(() => {
-        // Após salvar na planilha, monta e abre o WhatsApp normalmente
-        abrirWhatsApp(nome, email, telefone, cep, logradouro, numero, cidade, estado, qtdNum, valorLivros, frete, totalGeral);
-    }).catch(err => {
-        console.error("Erro ao salvar na planilha:", err);
-        // Abre o WhatsApp mesmo se a planilha falhar para não perder a venda
-        abrirWhatsApp(nome, email, telefone, cep, logradouro, numero, cidade, estado, qtdNum, valorLivros, frete, totalGeral);
-    });
-});
-
-// Função auxiliar para abrir o WhatsApp
-function abrirWhatsApp(nome, email, telefone, cep, logradouro, numero, cidade, estado, qtdNum, valorLivros, frete, totalGeral) {
-    let msg = `*Pedido de Livros QCSP*\n\n`;
-    msg += `*Nome:* ${nome}\n`;
-    msg += `*E-mail:* ${email}\n`;
-    msg += `*Telefone:* ${telefone}\n`;
-    msg += `*CEP:* ${cep}\n`;
-    msg += `*Logradouro:* ${logradouro}, ${numero}\n`;
-    const comp = document.getElementById('complemento').value.trim();
-    if (comp) msg += `*Complemento:* ${comp}\n`;
-    msg += `*Cidade:* ${cidade}\n`;
-    msg += `*Estado:* ${estado}\n`;
-    const nomeLoja = document.getElementById('nomeLoja').value.trim();
-    if (nomeLoja) msg += `*Nome da Loja:* ${nomeLoja}\n`;
-    const numeroLoja = document.getElementById('numeroLoja').value.trim();
-    if (numeroLoja) msg += `*Número da Loja:* ${numeroLoja}\n`;
-    const potencia = document.getElementById('potencia').value.trim();
-    if (potencia) msg += `*Potência:* ${potencia}\n`;
-    msg += `*Quantidade de exemplares (vol 4):* ${qtdNum}\n`;
-    msg += `*Valor dos livros:* R$ ${valorLivros.toFixed(2).replace('.',',')}\n`;
-    msg += `*Frete:* R$ ${frete.toFixed(2).replace('.',',')}\n`;
-    msg += `*Total:* R$ ${totalGeral.toFixed(2).replace('.',',')}\n\n`;
-    msg += `*Instruções de pagamento:*\n`;
-    msg += `PIX (chave): contato@qcsp333.gov.br\n`;
-    msg += `Após o pagamento, enviar comprovante para este WhatsApp.`;
-
-    const numeroWhats = '5512991513554';
-    window.open(`https://wa.me/${numeroWhats}?text=${encodeURIComponent(msg)}`, '_blank');
-});
-
-        
+        // Placeholder para integração com Sheet Monkey (substitua o link)
+        const SHEET_MONKEY_LINK = 'https://api.sheetmonkey.io/form/23zkbsdTYH8fsTBeUAoyf3';
+        // Exemplo de uso: fetch(SHEET_MONKEY_LINK, { method: 'POST', body: new FormData(document.getElementById('pedidoForm')) });
     </script>
 </body>
 </html>
