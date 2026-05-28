@@ -185,7 +185,7 @@
       const mensagem = `Pedido Ars Regum Vol 4\n\nNome: ${nome}\nE-mail: ${email}\nTelefone: ${telefone}\nCEP: ${cep}\nEndereço: ${logradouro}, ${numero}${complemento ? ', '+complemento : ''}\nCidade: ${cidade} - ${estado}\n${loja_nome ? 'Loja: '+loja_nome : ''}${loja_numero ? ' Nº '+loja_numero : ''}\n${potencia ? 'Potência: '+potencia : ''}\nQuantidade: ${quantidade} exemplares\nValor livros: R$ ${totalLivros.toFixed(2)}\nFrete: ${frete === 0 ? 'Grátis' : 'R$ '+frete.toFixed(2)}\nTotal: R$ ${total.toFixed(2)}\n\nPIX para pagamento: contato@qcsp333.gov.br`;
 
       // Enviar para Sheet Monkey (invisível)
-      const sheetMonkeyUrl = 'COLE_AQUI_O_SEU_LINK_DO_SHEET_MONKEY';
+      const sheetMonkeyUrl = 'https://api.sheetmonkey.io/form/jPMBQbTa6pU2ZF2wRDQcuX';
       const data = {
         nome, email, telefone, cep, logradouro, numero, complemento,
         cidade, estado, loja_nome, loja_numero, potencia, quantidade,
