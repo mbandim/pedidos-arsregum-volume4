@@ -3,207 +3,133 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pedido Ars Regum Vol 4</title>
+  <title>Formulário de Pedido - Ars Regum Vol 4</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Open Sans', 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .container { background: #fff; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); padding: 40px; max-width: 800px; width: 100%; transition: 0.3s; }
-    h1 { text-align: center; color: #2d3748; margin-bottom: 10px; font-weight: 700; font-size: 2rem; }
-    .subtitle { text-align: center; color: #718096; margin-bottom: 30px; font-size: 0.9rem; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
-    .form-group { display: flex; flex-direction: column; }
-    .form-group.full-width { grid-column: 1 / -1; }
-    label { margin-bottom: 6px; font-weight: 600; color: #4a5568; font-size: 0.9rem; }
-    label .required { color: #e53e3e; margin-left: 2px; }
-    input, select { padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; transition: border-color 0.2s; background: #f7fafc; }
-    input:focus, select:focus { outline: none; border-color: #667eea; background: #fff; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
-    .optional { opacity: 0.7; font-weight: 400; }
-    .btn-calc { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; border-radius: 8px; padding: 14px 24px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; margin-top: 10px; grid-column: 1 / -1; }
-    .btn-calc:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.4); }
-    .total-display { grid-column: 1 / -1; background: #f0fff4; border: 2px solid #9ae6b4; border-radius: 8px; padding: 15px; text-align: center; font-weight: 700; color: #22543d; font-size: 1.2rem; display: none; }
-    .btn-whatsapp { background: #25D366; color: #fff; border: none; border-radius: 8px; padding: 16px 24px; font-size: 1.1rem; font-weight: 700; cursor: pointer; width: 100%; margin-top: 20px; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-    .btn-whatsapp:hover { background: #1ebe5c; }
-    .btn-whatsapp img { width: 24px; height: 24px; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .container { background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 500px; width: 100%; padding: 30px; transition: 0.3s; }
+    h1 { text-align: center; color: #2c3e50; margin-bottom: 20px; font-size: 1.8rem; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 5px; font-weight: 600; color: #34495e; }
+    input, textarea { width: 100%; padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; }
+    input:focus, textarea:focus { outline: none; border-color: #3498db; }
+    textarea { resize: vertical; }
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.3s; min-width: 120px; }
+    .btn-primary { background: #3498db; }
+    .btn-primary:hover { background: #2980b9; }
+    .btn-success { background: #27ae60; }
+    .btn-success:hover { background: #1e8449; }
+    .btn-info { background: #16a085; }
+    .btn-info:hover { background: #117a65; }
+    #resultado { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px; border-left: 5px solid #3498db; }
+    #resultado p { margin: 5px 0; }
+    .pix-info { margin-top: 15px; padding: 10px; background: #ffeaa7; border-radius: 8px; text-align: center; }
+    .pix-info p { font-size: 0.9rem; }
+    .error { color: #e74c3c; font-size: 0.9rem; margin-top: 5px; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>📘 Pedido Ars Regum Vol 4</h1>
-    <p class="subtitle">Edição Especial Corrigida - Preencha os dados abaixo</p>
-    <form id="orderForm">
-      <div class="form-grid">
-        <!-- Nome -->
-        <div class="form-group full-width">
-          <label for="nome">Nome completo <span class="required">*</span></label>
-          <input type="text" id="nome" name="nome" required placeholder="Seu nome completo">
-        </div>
-        <!-- E-mail -->
-        <div class="form-group">
-          <label for="email">E-mail <span class="required">*</span></label>
-          <input type="email" id="email" name="email" required placeholder="seu@email.com">
-        </div>
-        <!-- Telefone -->
-        <div class="form-group">
-          <label for="telefone">Telefone (com DDD) <span class="required">*</span></label>
-          <input type="tel" id="telefone" name="telefone" required placeholder="(XX) XXXXX-XXXX" maxlength="15">
-        </div>
-        <!-- CEP -->
-        <div class="form-group">
-          <label for="cep">CEP <span class="required">*</span></label>
-          <input type="text" id="cep" name="cep" required placeholder="XXXXX-XXX" maxlength="9">
-        </div>
-        <!-- Logradouro -->
-        <div class="form-group full-width">
-          <label for="logradouro">Logradouro (Rua, Av. etc) <span class="required">*</span></label>
-          <input type="text" id="logradouro" name="logradouro" required placeholder="Nome da rua">
-        </div>
-        <!-- Número -->
-        <div class="form-group">
-          <label for="numero">Número <span class="required">*</span></label>
-          <input type="text" id="numero" name="numero" required placeholder="Nº">
-        </div>
-        <!-- Complemento -->
-        <div class="form-group">
-          <label for="complemento">Complemento <span class="optional">(opcional)</span></label>
-          <input type="text" id="complemento" name="complemento" placeholder="Apto, Bloco etc.">
-        </div>
-        <!-- Cidade -->
-        <div class="form-group">
-          <label for="cidade">Cidade <span class="required">*</span></label>
-          <input type="text" id="cidade" name="cidade" required placeholder="Sua cidade">
-        </div>
-        <!-- Estado -->
-        <div class="form-group">
-          <label for="estado">Estado <span class="required">*</span></label>
-          <select id="estado" name="estado" required>
-            <option value="" disabled selected>Selecione</option>
-            <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
-          </select>
-        </div>
-        <!-- Loja (opcional) -->
-        <div class="form-group">
-          <label for="loja_nome">Nome da Loja <span class="optional">(opcional)</span></label>
-          <input type="text" id="loja_nome" name="loja_nome" placeholder="Nome da loja">
-        </div>
-        <div class="form-group">
-          <label for="loja_numero">Número da Loja <span class="optional">(opcional)</span></label>
-          <input type="text" id="loja_numero" name="loja_numero" placeholder="Nº da loja">
-        </div>
-        <!-- Potência -->
-        <div class="form-group">
-          <label for="potencia">Potência <span class="optional">(opcional)</span></label>
-          <input type="text" id="potencia" name="potencia" placeholder="Ex: 10kW">
-        </div>
-        <!-- Quantidade -->
-        <div class="form-group full-width">
-          <label for="quantidade">Quantidade de exemplares do volume 4 <span class="required">*</span> (R$ 120,00 cada)</label>
-          <input type="number" id="quantidade" name="quantidade" required min="1" value="1" placeholder="Quantos exemplares?">
-        </div>
-        <!-- Botão Calcular -->
-        <button type="button" class="btn-calc" id="btnCalcular">💰 Calcular valor total (incluindo o frete)</button>
-        <!-- Display Total -->
-        <div class="total-display" id="totalDisplay"></div>
+    <h1>Pedido - Ars Regum Vol 4</h1>
+    <form id="pedidoForm">
+      <div class="form-group">
+        <label for="nome">Nome Completo</label>
+        <input type="text" id="nome" name="nome" required>
       </div>
-      <!-- Botão WhatsApp -->
-      <button type="button" class="btn-whatsapp" id="btnWhatsApp">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z'/%3E%3C/svg%3E" alt="WhatsApp">
-        Enviar pedido via WhatsApp
-      </button>
+      <div class="form-group">
+        <label for="endereco">Endereço Completo</label>
+        <textarea id="endereco" name="endereco" rows="3" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="telefone">Telefone (WhatsApp)</label>
+        <input type="tel" id="telefone" name="telefone" placeholder="(12) 99151-3554" required>
+      </div>
+      <div class="form-group">
+        <label for="quantidade">Quantidade de Livros</label>
+        <input type="number" id="quantidade" name="quantidade" min="1" value="1" required>
+      </div>
+      <div class="form-group">
+        <label for="frete">Valor do Frete (R$)</label>
+        <input type="number" id="frete" name="frete" step="0.01" min="0" value="0" required>
+      </div>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary" id="btnCalcular">Calcular Total</button>
+        <button type="button" class="btn btn-success" id="btnWhatsApp">Enviar WhatsApp</button>
+        <button type="button" class="btn btn-info" id="btnPix">Chave PIX</button>
+      </div>
     </form>
+
+    <div id="resultado">
+      <p id="display">Preencha os dados e calcule o total.</p>
+    </div>
+
+    <div class="pix-info" id="pixInfo" style="display: none;">
+      <p><strong>Chave PIX:</strong> contato@qcsp333.gov.br</p>
+      <p>Após o pagamento, envie o comprovante no WhatsApp.</p>
+    </div>
   </div>
+
   <script>
-    // Máscara de telefone
-    document.getElementById('telefone').addEventListener('input', function(e) {
-      let value = e.target.value.replace(/\D/g, '');
-      if (value.length > 11) value = value.slice(0, 11);
-      let formatted = value;
-      if (value.length > 2) formatted = '(' + value.slice(0,2) + ') ' + value.slice(2);
-      if (value.length > 7) formatted = formatted.slice(0,10) + '-' + formatted.slice(10);
-      e.target.value = formatted;
-    });
+    const PRECO_LIVRO = 45.00;
+    const WHATSAPP_NUMERO = '5512991513554';
+    const SHEET_MONKEY_URL = 'https://api.sheetmonkey.io/form/jPMBQbTa6pU2ZF2wRDQcuX';
 
-    // Máscara de CEP
-    document.getElementById('cep').addEventListener('input', function(e) {
-      let value = e.target.value.replace(/\D/g, '');
-      if (value.length > 8) value = value.slice(0, 8);
-      let formatted = value;
-      if (value.length > 5) formatted = value.slice(0,5) + '-' + value.slice(5);
-      e.target.value = formatted;
-    });
-
-    // Calcular total
     document.getElementById('btnCalcular').addEventListener('click', function() {
-      const qty = parseInt(document.getElementById('quantidade').value) || 0;
-      if (qty < 1) {
-        alert('Quantidade deve ser no mínimo 1.');
-        return;
-      }
-      const totalLivros = qty * 120;
-      const frete = qty >= 3 ? 0 : 15;
+      const quantidade = parseInt(document.getElementById('quantidade').value) || 0;
+      const frete = parseFloat(document.getElementById('frete').value) || 0;
+      const totalLivros = quantidade * PRECO_LIVRO;
       const total = totalLivros + frete;
-      const display = document.getElementById('totalDisplay');
-      display.style.display = 'block';
-      display.innerHTML = `🛒 Valor dos livros: R$ ${totalLivros.toFixed(2)}<br>${frete === 0 ? '🚚 Frete grátis!' : `📦 Frete: R$ ${frete.toFixed(2)}`}<br><strong>Total: R$ ${total.toFixed(2)}</strong>`;
+      const display = document.getElementById('display');
+      display.innerHTML = `Quantidade de livros: ${quantidade}<br>Valor dos livros: R$ ${totalLivros.toFixed(2)}<br>Frete: R$ ${frete.toFixed(2)}<br><strong>Total: R$ ${total.toFixed(2)}</strong>`;
     });
 
-    // Enviar WhatsApp + Sheet Monkey
-    document.getElementById('btnWhatsApp').addEventListener('click', async function() {
-      const requiredFields = ['nome','email','telefone','cep','logradouro','numero','cidade','estado','quantidade'];
-      let missing = false;
-      requiredFields.forEach(id => {
-        const field = document.getElementById(id);
-        if (!field.value.trim()) {
-          field.style.borderColor = 'red';
-          missing = true;
-        } else {
-          field.style.borderColor = '';
-        }
-      });
-      if (missing) {
-        alert('Preencha todos os campos obrigatórios.');
+    document.getElementById('btnWhatsApp').addEventListener('click', function() {
+      const nome = document.getElementById('nome').value.trim();
+      const endereco = document.getElementById('endereco').value.trim();
+      const telefone = document.getElementById('telefone').value.trim();
+      const quantidade = parseInt(document.getElementById('quantidade').value) || 0;
+      const frete = parseFloat(document.getElementById('frete').value) || 0;
+      const totalLivros = quantidade * PRECO_LIVRO;
+      const total = totalLivros + frete;
+
+      if (!nome || !endereco || !telefone) {
+        alert('Preencha todos os campos obrigatórios: Nome, Endereço e Telefone.');
         return;
       }
 
-      const nome = document.getElementById('nome').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const telefone = document.getElementById('telefone').value.trim();
-      const cep = document.getElementById('cep').value.trim();
-      const logradouro = document.getElementById('logradouro').value.trim();
-      const numero = document.getElementById('numero').value.trim();
-      const complemento = document.getElementById('complemento').value.trim();
-      const cidade = document.getElementById('cidade').value.trim();
-      const estado = document.getElementById('estado').value;
-      const loja_nome = document.getElementById('loja_nome').value.trim();
-      const loja_numero = document.getElementById('loja_numero').value.trim();
-      const potencia = document.getElementById('potencia').value.trim();
-      const quantidade = parseInt(document.getElementById('quantidade').value) || 0;
-      const totalLivros = quantidade * 120;
-      const frete = quantidade >= 3 ? 0 : 15;
-      const total = totalLivros + frete;
+      const mensagem = `Olá! Gostaria de fazer um pedido do livro Ars Regum Vol 4.\n\nNome: ${nome}\nEndereço: ${endereco}\nTelefone: ${telefone}\nQuantidade: ${quantidade}\nValor dos livros: R$ ${totalLivros.toFixed(2)}\nFrete: R$ ${frete.toFixed(2)}\nTotal: R$ ${total.toFixed(2)}`;
 
-      const mensagem = `Pedido Ars Regum Vol 4\n\nNome: ${nome}\nE-mail: ${email}\nTelefone: ${telefone}\nCEP: ${cep}\nEndereço: ${logradouro}, ${numero}${complemento ? ', '+complemento : ''}\nCidade: ${cidade} - ${estado}\n${loja_nome ? 'Loja: '+loja_nome : ''}${loja_numero ? ' Nº '+loja_numero : ''}\n${potencia ? 'Potência: '+potencia : ''}\nQuantidade: ${quantidade} exemplares\nValor livros: R$ ${totalLivros.toFixed(2)}\nFrete: ${frete === 0 ? 'Grátis' : 'R$ '+frete.toFixed(2)}\nTotal: R$ ${total.toFixed(2)}\n\nPIX para pagamento: contato@qcsp333.gov.br`;
-
-      // Enviar para Sheet Monkey (invisível)
-      const sheetMonkeyUrl = 'https://api.sheetmonkey.io/form/jPMBQbTa6pU2ZF2wRDQcuX';
-      const data = {
-        nome, email, telefone, cep, logradouro, numero, complemento,
-        cidade, estado, loja_nome, loja_numero, potencia, quantidade,
-        total_livros: totalLivros, frete, total
-      };
-      try {
-        await fetch(sheetMonkeyUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-      } catch (error) {
-        console.error('Sheet Monkey error:', error);
-      }
-
-      // Abrir WhatsApp
-      const url = `https://wa.me/5512991513554?text=${encodeURIComponent(mensagem)}`;
+      const url = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensagem)}`;
       window.open(url, '_blank');
+    });
+
+    document.getElementById('btnPix').addEventListener('click', function() {
+      const pixInfo = document.getElementById('pixInfo');
+      pixInfo.style.display = pixInfo.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Sheet Monkey submission on form submit
+    document.getElementById('pedidoForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = this;
+      const data = new FormData(form);
+      fetch(SHEET_MONKEY_URL, {
+        method: 'POST',
+        body: data
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Pedido registrado com sucesso! Entraremos em contato em breve.');
+          form.reset();
+        } else {
+          alert('Erro ao registrar pedido. Tente novamente.');
+        }
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro de conexão. Tente novamente.');
+      });
     });
   </script>
 </body>
