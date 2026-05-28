@@ -74,9 +74,9 @@
       <input type="number" id="quantidade" name="quantidade" min="1" value="1" required>
     </div>
     <div class="totals" id="totals">
-      <p>Valor dos exemplares: R$ <span id="subtotal">120,00</span></p>
+      <p>Valor dos exemplares: R$ <span id="subtotal">100,00</span></p>
       <p>Frete: R$ <span id="frete">0,00</span></p>
-      <p class="total-final">Total: R$ <span id="total">120,00</span></p>
+      <p class="total-final">Total: R$ <span id="total">100,00</span></p>
     </div>
     <button type="button" class="btn-calc" onclick="calcularFrete()">Calcular valor total (incluindo o frete)</button>
     <button type="submit" class="btn-submit">Enviar Pedido pelo WhatsApp</button>
@@ -125,7 +125,7 @@ function buscarCep(cep) {
 // Cálculo de frete
 function calcularFrete() {
   const quantidade = parseInt(document.getElementById('quantidade').value) || 0;
-  const precoUnitario = 120.00;
+  const precoUnitario = 100.00;
   const subtotal = quantidade * precoUnitario;
   
   let frete = 0;
@@ -182,7 +182,7 @@ document.getElementById('orderForm').addEventListener('submit', function(e) {
   const cidade = document.getElementById('cidade').value;
   const estado = document.getElementById('estado').value;
   const quantidade = parseInt(document.getElementById('quantidade').value);
-  const subtotal = quantidade * 120.00;
+  const subtotal = quantidade * 100.00;
   const frete = window.freteCalculado || 0;
   const total = subtotal + frete;
   
