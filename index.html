@@ -1,328 +1,223 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulário de Pedido - Ars Regum Vol 4</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      padding: 1rem;
-    }
-    .container {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 2rem;
-      max-width: 600px;
-      width: 100%;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    h1 {
-      color: #e2b714;
-      text-align: center;
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
-      letter-spacing: 2px;
-    }
-    .subtitle {
-      color: #888;
-      text-align: center;
-      margin-bottom: 1.5rem;
-      font-size: 0.9rem;
-    }
-    .input-group {
-      margin-bottom: 1rem;
-    }
-    label {
-      display: block;
-      color: #ccc;
-      margin-bottom: 0.3rem;
-      font-size: 0.9rem;
-    }
-    input, select {
-      width: 100%;
-      padding: 0.8rem;
-      border: 1px solid #444;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
-      font-size: 1rem;
-      transition: border-color 0.3s;
-    }
-    input:focus, select:focus {
-      outline: none;
-      border-color: #e2b714;
-    }
-    .row {
-      display: flex;
-      gap: 1rem;
-    }
-    .row .input-group { flex: 1; }
-    .btn {
-      width: 100%;
-      padding: 0.8rem;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
-      margin-top: 0.5rem;
-    }
-    .btn-primary {
-      background: #e2b714;
-      color: #1a1a2e;
-    }
-    .btn-primary:hover {
-      background: #d4a710;
-      transform: scale(1.02);
-    }
-    .btn-secondary {
-      background: #444;
-      color: #fff;
-    }
-    .btn-secondary:hover {
-      background: #555;
-    }
-    .frete-info {
-      text-align: center;
-      color: #e2b714;
-      font-size: 1.2rem;
-      margin: 1rem 0;
-      padding: 0.5rem;
-      border: 1px dashed #e2b714;
-      border-radius: 10px;
-    }
-    .total {
-      font-size: 1.5rem;
-      color: #fff;
-      text-align: center;
-      margin: 1rem 0;
-    }
-    .hidden { display: none; }
-    @media (max-width: 500px) {
-      .row { flex-direction: column; gap: 0; }
-      .container { padding: 1rem; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulário de Pedido - Ars Regum Vol 4</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; }
+  .container { background: white; border-radius: 20px; padding: 40px; max-width: 600px; width: 100%; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+  .container h1 { text-align: center; color: #4a4a4a; margin-bottom: 30px; font-size: 28px; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+  .form-group input, .form-group select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; transition: border 0.3s; }
+  .form-group input:focus, .form-group select:focus { border-color: #667eea; outline: none; }
+  .form-row { display: flex; gap: 20px; }
+  .form-row .form-group { flex: 1; }
+  .btn-calc, .btn-submit { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 18px; font-weight: 600; cursor: pointer; transition: transform 0.2s, opacity 0.3s; }
+  .btn-calc { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 15px; }
+  .btn-calc:hover { transform: scale(1.02); opacity: 0.9; }
+  .btn-submit { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: white; }
+  .btn-submit:hover { transform: scale(1.02); opacity: 0.9; }
+  .totals { background: #f7f7f7; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; }
+  .totals p { margin: 5px 0; font-size: 16px; color: #333; }
+  .totals .total-final { font-size: 24px; font-weight: 700; color: #4a4a4a; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>📚 Ars Regum Vol 4</h1>
-    <p class="subtitle">Faça seu pedido e receba em casa</p>
-    <form id="orderForm">
-      <div class="input-group">
-        <label for="name">Nome completo</label>
-        <input type="text" id="name" name="name" required placeholder="Seu nome">
+<div class="container">
+  <h1>Pedido Ars Regum Vol 4</h1>
+  <form id="orderForm">
+    <div class="form-group">
+      <label for="nome">Nome Completo</label>
+      <input type="text" id="nome" name="nome" required>
+    </div>
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="form-group">
+      <label for="telefone">Telefone (WhatsApp)</label>
+      <input type="tel" id="telefone" name="telefone" placeholder="(11) 99999-9999" required>
+    </div>
+    <div class="form-group">
+      <label for="cep">CEP</label>
+      <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9" required>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="logradouro">Logradouro</label>
+        <input type="text" id="logradouro" name="logradouro" readonly>
       </div>
-      <div class="input-group">
-        <label for="email">E-mail</label>
-        <input type="email" id="email" name="email" required placeholder="seu@email.com">
+      <div class="form-group">
+        <label for="numero">Número</label>
+        <input type="text" id="numero" name="numero" required>
       </div>
-      <div class="row">
-        <div class="input-group">
-          <label for="cep">CEP</label>
-          <input type="text" id="cep" name="cep" required placeholder="Apenas números" maxlength="8" inputmode="numeric">
-        </div>
-        <div class="input-group">
-          <label>&nbsp;</label>
-          <button type="button" class="btn btn-secondary" onclick="buscarEndereco()">Buscar CEP</button>
-        </div>
+    </div>
+    <div class="form-group">
+      <label for="complemento">Complemento</label>
+      <input type="text" id="complemento" name="complemento">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="cidade">Cidade</label>
+        <input type="text" id="cidade" name="cidade" readonly>
       </div>
-      <div class="input-group">
-        <label for="address">Logradouro</label>
-        <input type="text" id="address" name="address" readonly>
+      <div class="form-group">
+        <label for="estado">Estado</label>
+        <input type="text" id="estado" name="estado" readonly>
       </div>
-      <div class="row">
-        <div class="input-group">
-          <label for="city">Cidade</label>
-          <input type="text" id="city" name="city" readonly>
-        </div>
-        <div class="input-group">
-          <label for="state">Estado</label>
-          <input type="text" id="state" name="state" readonly>
-        </div>
-      </div>
-      <div class="input-group">
-        <label for="quantity">Quantidade (unidades)</label>
-        <input type="number" id="quantity" name="quantity" min="1" value="1" required>
-      </div>
-      <div class="input-group">
-        <label for="payment">Forma de pagamento</label>
-        <select id="payment" name="payment">
-          <option value="PIX">PIX</option>
-          <option value="Cartão de Crédito">Cartão de Crédito</option>
-          <option value="Boleto">Boleto</option>
-        </select>
-      </div>
-      <div id="freteDisplay" class="frete-info">Frete: R$ 0,00</div>
-      <div class="total">Total: R$ <span id="totalValue">0,00</span></div>
-      <button type="submit" class="btn btn-primary">Finalizar Pedido</button>
-    </form>
-  </div>
+    </div>
+    <div class="form-group">
+      <label for="quantidade">Quantidade de Exemplares</label>
+      <input type="number" id="quantidade" name="quantidade" min="1" value="1" required>
+    </div>
+    <div class="totals" id="totals">
+      <p>Valor dos exemplares: R$ <span id="subtotal">120,00</span></p>
+      <p>Frete: R$ <span id="frete">0,00</span></p>
+      <p class="total-final">Total: R$ <span id="total">120,00</span></p>
+    </div>
+    <button type="button" class="btn-calc" onclick="calcularFrete()">Calcular valor total (incluindo o frete)</button>
+    <button type="submit" class="btn-submit">Enviar Pedido pelo WhatsApp</button>
+  </form>
+</div>
 
-  <script>
-    const PRECO_UNITARIO = 79.90;
-    const PESO_UNITARIO_KG = 0.6;
-    const URL_SHEETMONKEY = "https://api.sheetmonkey.io/form/jPMBQbTa6pU2ZF2wRDQcuX";
-    const WHATSAPP_NUMBER = "5512991513554";
+<script>
+// Variável global para armazenar o estado de destino
+let estadoDestino = '';
 
-    const form = document.getElementById('orderForm');
-    const cepInput = document.getElementById('cep');
-    const addressInput = document.getElementById('address');
-    const cityInput = document.getElementById('city');
-    const stateInput = document.getElementById('state');
-    const quantityInput = document.getElementById('quantity');
-    const paymentSelect = document.getElementById('payment');
-    const freteDisplay = document.getElementById('freteDisplay');
-    const totalValueSpan = document.getElementById('totalValue');
+// ViaCEP - Busca endereço ao digitar 8 dígitos ou perder o foco
+document.getElementById('cep').addEventListener('input', function() {
+  let cep = this.value.replace(/\D/g, '');
+  if (cep.length === 8) {
+    buscarCep(cep);
+  }
+});
 
-    let currentFreteCentavos = 0; // armazenar valor em centavos para evitar erros de arredondamento
+document.getElementById('cep').addEventListener('blur', function() {
+  let cep = this.value.replace(/\D/g, '');
+  if (cep.length === 8) {
+    buscarCep(cep);
+  }
+});
 
-    // Função para buscar endereço via ViaCEP
-    function buscarEndereco() {
-      const cep = cepInput.value.replace(/\D/g, '');
-      if (cep.length !== 8) {
-        alert('CEP inválido! Digite 8 números.');
-        return;
-      }
-      fetch(`https://viacep.com.br/ws/${cep}/json/`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.erro) {
-            alert('CEP não encontrado.');
-            return;
-          }
-          addressInput.value = data.logradouro || '';
-          cityInput.value = data.localidade || '';
-          stateInput.value = data.uf || '';
+function buscarCep(cep) {
+  fetch(`https://viacep.com.br/ws/${cep}/json/`)
+    .then(response => response.json())
+    .then(data => {
+      if (!data.erro) {
+        document.getElementById('logradouro').value = data.logradouro;
+        document.getElementById('cidade').value = data.localidade;
+        document.getElementById('estado').value = data.uf;
+        estadoDestino = data.uf;
+        // Recalcular frete se já houver quantidade
+        if (document.getElementById('quantidade').value) {
           calcularFrete();
-        })
-        .catch(() => alert('Erro ao buscar CEP. Tente novamente.'));
-    }
-
-    // Função para calcular frete
-    function calcularFrete() {
-      const quantidade = parseInt(quantityInput.value) || 0;
-      if (quantidade <= 0) {
-        currentFreteCentavos = 0;
-        atualizarExibicao();
-        return;
-      }
-      if (quantidade >= 3) {
-        currentFreteCentavos = 0;
-        atualizarExibicao();
-        return;
-      }
-      const estado = stateInput.value.toUpperCase().trim();
-      if (!estado) {
-        currentFreteCentavos = 0;
-        atualizarExibicao();
-        return;
-      }
-      const pesoTotal = quantidade * PESO_UNITARIO_KG;
-      let freteCentavos = 0;
-      if (estado === 'SP') {
-        freteCentavos = (pesoTotal <= 1) ? 1350 : 1680; // em centavos
-      } else if (['RJ','MG','ES','PR','SC','RS'].includes(estado)) {
-        freteCentavos = (pesoTotal <= 1) ? 1720 : 2240;
+        }
       } else {
-        freteCentavos = (pesoTotal <= 1) ? 2150 : 2790;
+        alert('CEP não encontrado.');
       }
-      // Arredondar para múltiplo de 5 superior
-      freteCentavos = Math.ceil(freteCentavos / 500) * 500;
-      currentFreteCentavos = freteCentavos;
-      atualizarExibicao();
+    })
+    .catch(() => alert('Erro ao buscar CEP.'));
+}
+
+// Cálculo de frete
+function calcularFrete() {
+  const quantidade = parseInt(document.getElementById('quantidade').value) || 0;
+  const precoUnitario = 120.00;
+  const subtotal = quantidade * precoUnitario;
+  
+  let frete = 0;
+  if (quantidade >= 3) {
+    frete = 0;
+  } else {
+    const pesoTotal = quantidade * 0.6; // kg
+    const estado = estadoDestino;
+    
+    // Tabela de frete por estado e peso
+    let baseFrete = 0;
+    if (pesoTotal <= 1) {
+      if (estado === 'SP') {
+        baseFrete = 13.50;
+      } else if (['RJ','MG','ES','PR','SC','RS'].includes(estado)) {
+        baseFrete = 17.20;
+      } else {
+        baseFrete = 21.50;
+      }
+    } else {
+      if (estado === 'SP') {
+        baseFrete = 16.80;
+      } else if (['RJ','MG','ES','PR','SC','RS'].includes(estado)) {
+        baseFrete = 22.40;
+      } else {
+        baseFrete = 27.90;
+      }
     }
+    // Arredondamento para múltiplo de 5 superior
+    frete = Math.ceil(baseFrete / 5) * 5;
+  }
+  
+  const total = subtotal + frete;
+  
+  document.getElementById('subtotal').textContent = subtotal.toFixed(2).replace('.', ',');
+  document.getElementById('frete').textContent = frete.toFixed(2).replace('.', ',');
+  document.getElementById('total').textContent = total.toFixed(2).replace('.', ',');
+  
+  // Armazenar frete para uso no envio
+  window.freteCalculado = frete;
+}
 
-    function atualizarExibicao() {
-      const quantidade = parseInt(quantityInput.value) || 0;
-      const freteReais = (currentFreteCentavos / 100).toFixed(2);
-      const totalCentavos = quantidade * PRECO_UNITARIO * 100 + currentFreteCentavos;
-      const totalReais = (totalCentavos / 100).toFixed(2);
-      freteDisplay.textContent = `Frete: R$ ${freteReais.replace('.', ',')}`;
-      totalValueSpan.textContent = totalReais.replace('.', ',');
-    }
-
-    // Event listeners para recalcular quando quantidade ou CEP mudar
-    quantityInput.addEventListener('input', calcularFrete);
-    cepInput.addEventListener('blur', buscarEndereco);
-
-    // Buscar preencher endereço automaticamente se CEP já estiver preenchido
-    cepInput.addEventListener('input', function() {
-      if (this.value.length === 8) {
-        buscarEndereco();
-      }
-    });
-
-    // Submissão do formulário
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const cep = cepInput.value.replace(/\D/g, '');
-      const endereco = addressInput.value.trim();
-      const cidade = cityInput.value.trim();
-      const estado = stateInput.value.trim();
-      const quantidade = parseInt(quantityInput.value) || 0;
-      const pagamento = paymentSelect.value;
-
-      if (!name || !email || cep.length !== 8 || !endereco || !cidade || !estado || quantidade < 1) {
-        alert('Preencha todos os campos corretamente.');
-        return;
-      }
-
-      // Calcular frete novamente para garantir
-      calcularFrete();
-      const freteReais = (currentFreteCentavos / 100).toFixed(2);
-      const totalCentavos = quantidade * PRECO_UNITARIO * 100 + currentFreteCentavos;
-      const totalReais = (totalCentavos / 100).toFixed(2);
-
-      // Dados para Sheet Monkey
-      const payload = {
-        nome: name,
-        email: email,
-        cep: cep,
-        endereco: endereco,
-        cidade: cidade,
-        estado: estado,
-        quantidade: quantidade,
-        frete: freteReais,
-        total: totalReais,
-        pagamento: pagamento
-      };
-
-      // Enviar para Sheet Monkey via POST síncrono
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', URL_SHEETMONKEY, false); // síncrono
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      try {
-        xhr.send(JSON.stringify(payload));
-      } catch (err) {
-        // Ignorar erro para não interromper fluxo
-      }
-
-      // Redirecionar para WhatsApp
-      const mensagem = `Olá! Gostaria de fazer um pedido do Ars Regum Vol 4.%0A%0A` +
-        `Nome: ${name}%0A` +
-        `E-mail: ${email}%0A` +
-        `Endereço: ${endereco}, ${cidade} - ${estado}, CEP: ${cep}%0A` +
-        `Quantidade: ${quantidade}%0A` +
-        `Frete: R$ ${freteReais.replace('.', ',')}%0A` +
-        `Total: R$ ${totalReais.replace('.', ',')}%0A` +
-        `Pagamento: ${pagamento}%0A%0A` +
-        `Para pagamento via PIX, utilize a chave: contato@qcsp333.gov.br`;
-      const urlWhats = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensagem}`;
-      window.open(urlWhats, '_blank');
-    });
-  </script>
+// Envio do formulário
+document.getElementById('orderForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const nome = document.getElementById('nome').value;
+  const email = document.getElementById('email').value;
+  const telefone = document.getElementById('telefone').value;
+  const cep = document.getElementById('cep').value;
+  const logradouro = document.getElementById('logradouro').value;
+  const numero = document.getElementById('numero').value;
+  const complemento = document.getElementById('complemento').value;
+  const cidade = document.getElementById('cidade').value;
+  const estado = document.getElementById('estado').value;
+  const quantidade = parseInt(document.getElementById('quantidade').value);
+  const subtotal = quantidade * 120.00;
+  const frete = window.freteCalculado || 0;
+  const total = subtotal + frete;
+  
+  // Dados para Sheet Monkey
+  const dadosSheet = {
+    nome,
+    email,
+    telefone,
+    cep,
+    logradouro,
+    numero,
+    complemento,
+    cidade,
+    estado,
+    quantidade,
+    subtotal: subtotal.toFixed(2),
+    frete: frete.toFixed(2),
+    total: total.toFixed(2)
+  };
+  
+  // Enviar para Sheet Monkey
+  fetch('https://api.sheetmonkey.io/form/jPMBQbTa6pU2ZF2wRDQcuX', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dadosSheet)
+  }).then(() => {
+    // Após sucesso, abrir WhatsApp
+    const mensagem = `Olá! Gostaria de fazer um pedido do Ars Regum Vol 4.\n\n*Dados do Cliente*\nNome: ${nome}\nE-mail: ${email}\nTelefone: ${telefone}\n\n*Endereço de Entrega*\nCEP: ${cep}\nLogradouro: ${logradouro}, ${numero}${complemento ? ' - ' + complemento : ''}\nCidade: ${cidade} - ${estado}\n\n*Pedido*\nQuantidade: ${quantidade}\nValor dos exemplares: R$ ${subtotal.toFixed(2)}\nFrete: R$ ${frete.toFixed(2)}\nTotal: R$ ${total.toFixed(2)}\n\n*Pagamento*\nPIX: contato@qcsp333.gov.br\nValor: R$ ${total.toFixed(2)}`;
+    const urlWhatsApp = `https://wa.me/5512991513554?text=${encodeURIComponent(mensagem)}`;
+    window.open(urlWhatsApp, '_blank');
+  }).catch(err => {
+    alert('Erro ao registrar pedido. Tente novamente.');
+    console.error(err);
+  });
+});
+</script>
 </body>
 </html>
