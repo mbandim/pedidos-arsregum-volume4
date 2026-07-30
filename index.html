@@ -14,7 +14,6 @@
         :root {
             --navy: #1a1a2e;
             --gold: #c9a84c;
-            --gold-light: #e0c06a;
             --bg: #f4f4f9;
             --text: #333;
             --white: #fff;
@@ -79,7 +78,6 @@
         .section-title .sym {
             color: var(--gold);
             margin-right: 10px;
-            font-size: 1.1rem;
         }
 
         .grid {
@@ -174,21 +172,14 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         #resultBox h3 {
             font-family: Georgia, serif;
             color: var(--navy);
             margin-bottom: 14px;
-            font-size: 1.15rem;
         }
 
         .ship-opt {
@@ -297,19 +288,44 @@
             margin-top: 3px;
         }
 
+        .frete-fallback {
+            display: none;
+            margin-top: 12px;
+            padding: 14px;
+            background: #fff9e6;
+            border: 1px solid #f0d78a;
+            border-radius: 8px;
+        }
+
+        .frete-fallback label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .frete-fallback input {
+            margin-top: 4px;
+            padding: 10px;
+            border: 1.5px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+        .frete-fallback select {
+            margin-top: 4px;
+            padding: 10px;
+            border: 1.5px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
         @media (max-width: 600px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-            .full {
-                grid-column: span 1;
-            }
-            header h1 {
-                font-size: 1.7rem;
-            }
-            form {
-                padding: 20px 16px;
-            }
+            .grid { grid-template-columns: 1fr; }
+            .full { grid-column: span 1; }
+            header h1 { font-size: 1.7rem; }
+            form { padding: 20px 16px; }
         }
     </style>
 </head>
@@ -417,6 +433,20 @@
                 <h3>&#9670; Resumo do Pedido</h3>
                 <div id="shippingOptions"></div>
 
+                <!-- Fallback manual para frete -->
+                <div class="frete-fallback" id="freteFallback">
+                    <label>Valor do frete (R$) <span class="req">*</span></label>
+                    <input type="number" id="freteManual" min="0" step="0.01" placeholder="Ex: 25,90">
+                    <label style="margin-top:10px">Modalidade</label>
+                    <select id="freteModalidade">
+                        <option value="PAC">PAC (Remessa Registrada Simples)</option>
+                        <option value="Sedex">Sedex</option>
+                    </select>
+                    <button type="button" class="btn-primary" id="btnAplicarFreteManual" style="margin-top:10px;font-size:0.9rem;padding:10px">
+                        Aplicar frete manual
+                    </button>
+                </div>
+
                 <div id="subtotalLine" class="total-line"></div>
 
                 <div class="pix-box">
@@ -453,6 +483,7 @@
             let freteSelecionado = 0;
             let tipoFreteSelecionado = '';
             let freteOptions = [];
+            let freteManualAtivo = false;
 
             // ===== DOM REFS =====
             const $ = id => document.getElementById(id);
@@ -468,6 +499,10 @@
             const subtotalLine = $('subtotalLine');
             const btnCalc = $('btnCalc');
             const btnWhats = $('btnWhats');
+            const freteFallback = $('freteFallback');
+            const freteManual = $('freteManual');
+            const freteModalidade = $('freteModalidade');
+            const btnAplicarFreteManual = $('btnAplicarFreteManual');
 
             // ===== MASCARA CEP =====
             cep.addEventListener('input', function() {
@@ -496,18 +531,18 @@
 
             // ===== BUSCA CEP (ViaCEP) =====
             async function buscarCep(cepNum) {
-                cepStatus.textContent = 'Buscando endereço...';
+                cepStatus.textContent = 'Buscando endereco...';
                 try {
                     const r = await fetch('https://viacep.com.br/ws/' + cepNum + '/json/');
                     const d = await r.json();
-                    if (d.erro) throw new Error('CEP não encontrado');
+                    if (d.erro) throw new Error('CEP nao encontrado');
                     logradouro.value = d.logradouro || '';
                     bairro.value = d.bairro || '';
                     cidade.value = d.localidade || '';
                     estado.value = d.uf || '';
                     cepStatus.textContent = '';
                 } catch (e) {
-                    cepStatus.textContent = 'CEP não encontrado. Preencha manualmente.';
+                    cepStatus.textContent = 'CEP nao encontrado. Preencha manualmente.';
                 }
             }
 
@@ -517,30 +552,31 @@
                 const qtd = parseInt(quantidade.value) || 0;
 
                 if (cepNum.length !== 8) {
-                    alert('Informe um CEP válido com 8 dígitos.');
+                    alert('Informe um CEP valido com 8 digitos.');
                     return;
                 }
                 if (qtd < 1) {
-                    alert('Informe a quantidade de exemplares (mínimo 1).');
+                    alert('Informe a quantidade de exemplares (minimo 1).');
                     return;
                 }
 
                 resultBox.style.display = 'block';
-                shippingOptions.innerHTML = '<div class="loader">Calculando...</div>';
+                freteFallback.style.display = 'none';
+                freteManualAtivo = false;
+                shippingOptions.innerHTML = '<div class="loader">Calculando frete junto aos Correios...</div>';
 
                 const subtotal = qtd * PRECO_UNITARIO;
 
-                // Frete grátis para 3 ou mais exemplares
+                // Frete gratis para 3 ou mais exemplares
                 if (qtd >= 3) {
                     freteSelecionado = 0;
-                    tipoFreteSelecionado = 'Frete Grátis (3+ unid.)';
+                    tipoFreteSelecionado = 'Frete Gratis (3+ unid.)';
                     freteOptions = [];
                     shippingOptions.innerHTML =
                         '<div class="ship-opt active" style="cursor:default">' +
-                        '<span class="name">Frete Grátis</span>' +
+                        '<span class="name">Frete Gratis</span>' +
                         '<span class="price">R$ 0,00</span>' +
-                        '</div>' +
-                        '<div style="font-size:0.85rem;color:#888;margin-top:4px">Frete cortesia para pedidos com 3 ou mais exemplares.</div>';
+                        '</div>';
                     atualizarTotal(subtotal);
                     resultBox.scrollIntoView({ behavior: 'smooth' });
                     return;
@@ -567,11 +603,42 @@
                     sCdAvisoRecebimento: 'n'
                 });
 
+                // Tentativa com 2 proxies diferentes
                 const soapUrl = 'http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo?' + params.toString();
 
+                let xmlText = null;
+                let proxyUsado = '';
+
+                const proxies = [
+                    { nome: 'allorigins', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(soapUrl) },
+                    { nome: 'corsproxy', url: 'https://corsproxy.io/?' + encodeURIComponent(soapUrl) }
+                ];
+
+                for (const proxy of proxies) {
+                    try {
+                        const resp = await fetch(proxy.url, { signal: AbortSignal.timeout(8000) });
+                        if (!resp.ok) continue;
+                        xmlText = await resp.text();
+                        proxyUsado = proxy.nome;
+                        if (xmlText && xmlText.includes('cServico')) break;
+                    } catch(e) {
+                        continue;
+                    }
+                }
+
+                if (!xmlText) {
+                    // Nenhum proxy funcionou — mostra fallback manual
+                    shippingOptions.innerHTML = '<div style="color:var(--error)">' +
+                        'Nao foi possivel calcular o frete automaticamente.</div>';
+                    freteFallback.style.display = 'block';
+                    freteSelecionado = 0;
+                    tipoFreteSelecionado = 'A consultar';
+                    atualizarTotal(subtotal);
+                    resultBox.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+
                 try {
-                    const proxyResp = await fetch('https://corsproxy.io/?' + encodeURIComponent(soapUrl));
-                    const xmlText = await proxyResp.text();
                     const parser = new DOMParser();
                     const xml = parser.parseFromString(xmlText, 'text/xml');
                     const servicos = xml.querySelectorAll('cServico');
@@ -597,7 +664,7 @@
                     });
 
                     if (!freteOptions.length) {
-                        throw new Error('Nenhuma opção de frete disponível para este CEP.');
+                        throw new Error('Nenhuma opcao de frete disponivel para este CEP.');
                     }
 
                     freteSelecionado = freteOptions[0].valor;
@@ -607,13 +674,25 @@
                         const ativo = idx === 0 ? 'active' : '';
                         html += '<div class="ship-opt ' + ativo + '" data-idx="' + idx + '">' +
                             '<span class="name">' + opt.nome + '</span>' +
-                            '<span style="font-size:0.85rem;color:#888;margin-right:12px">' + opt.prazo + ' dia(s) útil(eis)</span>' +
+                            '<span style="font-size:0.85rem;color:#888;margin-right:12px">' + opt.prazo + ' dia(s) util(eis)</span>' +
                             '<span class="price">R$ ' + opt.valor.toFixed(2).replace('.', ',') + '</span>' +
                             '</div>';
                     });
 
+                    // Mostra link de fallback manual discreto
+                    html += '<div style="margin-top:10px;font-size:0.82rem">' +
+                        '<a href="#" id="linkFallback" style="color:#888">Problemas com o frete? Calcular manualmente</a></div>';
+
                     shippingOptions.innerHTML = html;
 
+                    // Evento para mostrar fallback manual
+                    document.getElementById('linkFallback').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        freteFallback.style.display = 'block';
+                        this.style.display = 'none';
+                    });
+
+                    // Eventos de clique nas opcoes de frete
                     document.querySelectorAll('.ship-opt').forEach(function(el) {
                         el.addEventListener('click', function() {
                             document.querySelectorAll('.ship-opt').forEach(function(e) {
@@ -623,6 +702,8 @@
                             const idx = parseInt(this.dataset.idx);
                             freteSelecionado = freteOptions[idx].valor;
                             tipoFreteSelecionado = freteOptions[idx].nome;
+                            freteManualAtivo = false;
+                            freteFallback.style.display = 'none';
                             atualizarTotal(subtotal);
                         });
                     });
@@ -630,15 +711,32 @@
                     atualizarTotal(subtotal);
 
                 } catch (e) {
-                    shippingOptions.innerHTML = '<div style="color: var(--error)">' +
-                        'Não foi possível calcular o frete automaticamente. ' +
-                        'Entre em contato pelo WhatsApp para obter o valor do frete para seu CEP.</div>';
+                    shippingOptions.innerHTML = '<div style="color:var(--error)">' +
+                        'Erro ao processar o frete.</div>';
+                    freteFallback.style.display = 'block';
                     freteSelecionado = 0;
                     tipoFreteSelecionado = 'A consultar';
                     atualizarTotal(subtotal);
                 }
 
                 resultBox.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // ===== FRETE MANUAL (FALLBACK) =====
+            btnAplicarFreteManual.addEventListener('click', function() {
+                const qtd = parseInt(quantidade.value) || 0;
+                const subtotal = qtd * PRECO_UNITARIO;
+                const valor = parseFloat(freteManual.value.replace(',', '.'));
+                if (isNaN(valor) || valor < 0) {
+                    alert('Informe um valor de frete valido.');
+                    return;
+                }
+                freteSelecionado = valor;
+                tipoFreteSelecionado = freteModalidade.value === 'PAC'
+                    ? 'PAC (Remessa Registrada Simples)'
+                    : 'Sedex';
+                freteManualAtivo = true;
+                atualizarTotal(subtotal);
             });
 
             // ===== ATUALIZAR TOTAL =====
@@ -668,7 +766,7 @@
                 const qtd = parseInt(quantidade.value) || 0;
 
                 if (!nome || !telefone || !log || !num || !cid || !est || qtd < 1) {
-                    alert('Preencha todos os campos obrigatórios antes de enviar.');
+                    alert('Preencha todos os campos obrigatorios antes de enviar.');
                     return;
                 }
 
@@ -709,17 +807,25 @@
 
                 // 2) Montar mensagem WhatsApp
                 const linha = '%0A';
+                let infoLoja = '';
+                if (loja) {
+                    infoLoja = '*Loja:* ' + loja;
+                    if (lojaNum) infoLoja += ' n ' + lojaNum;
+                    if (pot) infoLoja += ' (' + pot + ')';
+                    infoLoja += linha + linha;
+                }
+
                 const msg =
                     '*NOVO PEDIDO - ARS REGUM VOL. 4*' + linha + linha +
                     '*Dados Pessoais*' + linha +
                     'Nome: ' + nome + linha +
                     'Tel: ' + telefone + linha +
                     (email ? 'E-mail: ' + email + linha : '') + linha +
-                    '*Endereço de Entrega*' + linha +
+                    '*Endereco de Entrega*' + linha +
                     log + ', ' + num + (comp ? ' - ' + comp : '') + linha +
                     (bair ? bair + ' - ' : '') + cid + '/' + est + linha +
                     'CEP: ' + cepVal + linha + linha +
-                    (loja ? '*Loja:* ' + loja + (lojaNum ? ' n ' + lojaNum : '') + (pot ? ' (' + pot + ')' : '') + linha + linha : '') +
+                    infoLoja +
                     '*Pedido*' + linha +
                     qtd + ' exemplar(es) x R$ 100,00 = R$ ' + subtotal.toFixed(2).replace('.', ',') + linha +
                     'Frete: ' + tipoFreteSelecionado + ' = R$ ' + freteSelecionado.toFixed(2).replace('.', ',') + linha +
