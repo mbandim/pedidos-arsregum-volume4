@@ -1,240 +1,767 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Formulário de Pedido - Ars Regum Vol 4</title>
-<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-    .container { background: white; border-radius: 20px; padding: 40px; max-width: 900px; width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-    h1 { text-align: center; color: #333; margin-bottom: 30px; font-weight: 700; font-size: 28px; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .full-width { grid-column: span 2; }
-    .form-group { display: flex; flex-direction: column; }
-    label { font-weight: 600; margin-bottom: 5px; color: #444; }
-    label span { color: #e74c3c; }
-    input, select { padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; transition: border-color 0.3s; }
-    input:focus, select:focus { border-color: #667eea; outline: none; }
-    input[readonly] { background: #f5f5f5; }
-    .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-size: 18px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; width: 100%; margin-top: 20px; }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102,126,234,0.4); }
-    #totals, #btnWhatsApp { display: none; text-align: center; margin-top: 20px; }
-    #totals { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; border-radius: 10px; }
-    #totals h3 { color: #2c3e50; margin-bottom: 10px; }
-    #totals p { font-size: 16px; margin: 5px 0; }
-    #totals .pix { font-weight: 700; color: #27ae60; background: #d5f5e3; padding: 5px 10px; border-radius: 5px; display: inline-block; margin-top: 10px; }
-    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ars Regum Vol. 4 - Pedidos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #1a1a2e;
+            --gold: #c9a84c;
+            --gold-light: #e0c06a;
+            --bg: #f4f4f9;
+            --text: #333;
+            --white: #fff;
+            --error: #b71c1c;
+            --success: #27ae60;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            border-top: 6px solid var(--gold);
+        }
+
+        header {
+            background: var(--navy);
+            color: var(--gold);
+            padding: 45px 20px 35px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::after {
+            content: "\u2726 \u2726 \u2726";
+            display: block;
+            color: var(--gold);
+            font-size: 1.2rem;
+            letter-spacing: 8px;
+            margin-top: 10px;
+            opacity: 0.6;
+        }
+
+        header h1 {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 2.4rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: #ccc;
+            font-style: italic;
+            font-size: 1.05rem;
+        }
+
+        form {
+            padding: 35px 30px 30px;
+        }
+
+        .section-title {
+            font-family: Georgia, serif;
+            color: var(--navy);
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 6px;
+            margin: 28px 0 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title .sym {
+            color: var(--gold);
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .full {
+            grid-column: span 2;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .field label .req {
+            color: var(--error);
+        }
+
+        .field input,
+        .field select {
+            padding: 11px 12px;
+            border: 1.5px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            background: var(--white);
+        }
+
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2);
+        }
+
+        .field input[readonly] {
+            background: #f0f0f0;
+            cursor: default;
+        }
+
+        .field small {
+            font-size: 0.78rem;
+            color: #777;
+            margin-top: 3px;
+        }
+
+        .btn-primary {
+            background: var(--navy);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            padding: 14px 20px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 22px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--gold);
+            color: var(--navy);
+        }
+
+        #resultBox {
+            display: none;
+            margin-top: 28px;
+            padding: 24px;
+            background: #fafafa;
+            border: 2px dashed var(--gold);
+            border-radius: 10px;
+            animation: fadeIn 0.45s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #resultBox h3 {
+            font-family: Georgia, serif;
+            color: var(--navy);
+            margin-bottom: 14px;
+            font-size: 1.15rem;
+        }
+
+        .ship-opt {
+            background: var(--white);
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .ship-opt:hover {
+            border-color: var(--gold);
+        }
+
+        .ship-opt.active {
+            border-color: var(--gold);
+            background: rgba(201, 168, 76, 0.07);
+        }
+
+        .ship-opt .name {
+            font-weight: 600;
+        }
+
+        .ship-opt .price {
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .total-line {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--navy);
+            text-align: center;
+            margin: 18px 0 14px;
+            padding: 12px;
+            background: var(--white);
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .pix-box {
+            background: #eaf4ff;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #b8d4f0;
+            margin: 14px 0;
+        }
+
+        .pix-box strong {
+            display: block;
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 4px;
+        }
+
+        .pix-box .chave {
+            font-family: 'Courier New', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--navy);
+            background: var(--white);
+            padding: 6px 14px;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 4px 0 8px;
+            border: 1px dashed var(--navy);
+        }
+
+        .pix-box .note {
+            font-size: 0.82rem;
+            color: #666;
+        }
+
+        .btn-whats {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #25d366;
+            color: var(--white);
+            border: none;
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 6px;
+            transition: background 0.25s;
+            margin-top: 10px;
+        }
+
+        .btn-whats:hover {
+            background: #1da851;
+        }
+
+        .loader {
+            font-style: italic;
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+
+        .msg-erro {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .full {
+                grid-column: span 1;
+            }
+            header h1 {
+                font-size: 1.7rem;
+            }
+            form {
+                padding: 20px 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h1>Pedido Ars Regum Vol 4 - Restauração do Layout Premium</h1>
-    <form id="orderForm">
-        <div class="form-grid">
-            <div class="form-group full-width">
-                <label for="nome">Nome completo <span>*</span></label>
-                <input type="text" id="nome" name="nome" required>
-            </div>
-            <div class="form-group full-width">
-                <label for="email">E-mail <span>*</span></label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="telefone">Telefone (com DDD) <span>*</span></label>
-                <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" required>
-            </div>
-            <div class="form-group">
-                <label for="cep">CEP <span>*</span></label>
-                <input type="text" id="cep" name="cep" placeholder="XXXXX-XXX" required>
-            </div>
-            <div class="form-group full-width">
-                <label for="logradouro">Logradouro (Rua, Av. etc) <span>*</span></label>
-                <input type="text" id="logradouro" name="logradouro" readonly required>
-            </div>
-            <div class="form-group">
-                <label for="numero">Número <span>*</span></label>
-                <input type="text" id="numero" name="numero" required>
-            </div>
-            <div class="form-group">
-                <label for="complemento">Complemento [Opcional]</label>
-                <input type="text" id="complemento" name="complemento">
-            </div>
-            <div class="form-group">
-                <label for="cidade">Cidade <span>*</span></label>
-                <input type="text" id="cidade" name="cidade" readonly required>
-            </div>
-            <div class="form-group">
-                <label for="estado">Estado (Sigla) <span>*</span></label>
-                <input type="text" id="estado" name="estado" readonly required>
-            </div>
-            <div class="form-group">
-                <label for="loja">Nome da Loja [Opcional]</label>
-                <input type="text" id="loja" name="loja">
-            </div>
-            <div class="form-group">
-                <label for="numeroLoja">Número da Loja [Opcional]</label>
-                <input type="text" id="numeroLoja" name="numeroLoja">
-            </div>
-            <div class="form-group">
-                <label for="potencia">Potência [Opcional]</label>
-                <input type="text" id="potencia" name="potencia">
-            </div>
-            <div class="form-group full-width">
-                <label for="quantidade">Quantidade de exemplares do volume 4 <span>*</span> (R$ 100,00 cada)</label>
-                <input type="number" id="quantidade" name="quantidade" min="1" required>
-            </div>
-        </div>
-        <button type="button" id="btnCalcular" class="btn">Calcular valor total (incluindo o frete)</button>
-        <div id="totals">
-            <h3>Resumo do Pedido</h3>
-            <p id="subtotal"></p>
-            <p id="frete"></p>
-            <p id="total"></p>
-            <p class="pix">Faça o PIX para a chave: <strong>contato@qcsp333.com.br</strong></p>
-        </div>
-        <button type="button" id="btnWhatsApp" class="btn">Enviar pedido pelo WhatsApp</button>
-    </form>
-</div>
 
-<script>
-    // Masks
-    function mascaraTelefone(input) {
-        let v = input.value.replace(/\D/g, '');
-        v = v.substring(0, 11);
-        if (v.length > 2) v = '(' + v.substring(0,2) + ') ' + v.substring(2);
-        if (v.length > 9) v = v.substring(0,9) + '-' + v.substring(9);
-        input.value = v;
-    }
+    <div class="container">
 
-    function mascaraCEP(input) {
-        let v = input.value.replace(/\D/g, '');
-        v = v.substring(0, 8);
-        if (v.length > 5) v = v.substring(0,5) + '-' + v.substring(5);
-        input.value = v;
-    }
+        <header>
+            <h1>Ars Regum</h1>
+            <p>Volume 4 — Formulário de Aquisição</p>
+        </header>
 
-    document.getElementById('telefone').addEventListener('input', function() { mascaraTelefone(this); });
-    document.getElementById('cep').addEventListener('input', function() { mascaraCEP(this); });
+        <form id="orderForm" autocomplete="on">
 
-    // ViaCEP
-    function buscarCEP() {
-        const cep = document.getElementById('cep').value.replace(/\D/g, '');
-        if (cep.length !== 8) return;
-        fetch(`https://viacep.com.br/ws/${cep}/json/`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.erro) {
-                    alert('CEP não encontrado.');
-                    document.getElementById('logradouro').value = '';
-                    document.getElementById('cidade').value = '';
-                    document.getElementById('estado').value = '';
+            <!-- DADOS PESSOAIS -->
+            <div class="section-title">
+                <span class="sym">&#9670;</span> Dados Pessoais
+            </div>
+            <div class="grid">
+                <div class="field full">
+                    <label>Nome Completo <span class="req">*</span></label>
+                    <input type="text" id="nome" required placeholder="Seu nome completo">
+                </div>
+                <div class="field">
+                    <label>E-mail</label>
+                    <input type="email" id="email" placeholder="seu@email.com">
+                </div>
+                <div class="field">
+                    <label>Telefone / WhatsApp <span class="req">*</span></label>
+                    <input type="text" id="telefone" required placeholder="(00) 00000-0000" maxlength="16">
+                </div>
+            </div>
+
+            <!-- ENDERECO -->
+            <div class="section-title">
+                <span class="sym">&#9670;</span> Endereço de Entrega
+            </div>
+            <div class="grid">
+                <div class="field">
+                    <label>CEP <span class="req">*</span></label>
+                    <input type="text" id="cep" required placeholder="00000-000" maxlength="9">
+                    <div id="cepStatus" class="loader"></div>
+                </div>
+                <div class="field">
+                    <label>Logradouro <span class="req">*</span></label>
+                    <input type="text" id="logradouro" required>
+                </div>
+                <div class="field">
+                    <label>Número <span class="req">*</span></label>
+                    <input type="text" id="numero" required>
+                </div>
+                <div class="field">
+                    <label>Complemento</label>
+                    <input type="text" id="complemento" placeholder="Apto, Bloco, etc.">
+                </div>
+                <div class="field">
+                    <label>Bairro <span class="req">*</span></label>
+                    <input type="text" id="bairro" required>
+                </div>
+                <div class="field">
+                    <label>Cidade <span class="req">*</span></label>
+                    <input type="text" id="cidade" required readonly>
+                </div>
+                <div class="field">
+                    <label>Estado <span class="req">*</span></label>
+                    <input type="text" id="estado" required readonly>
+                </div>
+            </div>
+
+            <!-- INFORMACOES MACONICAS -->
+            <div class="section-title">
+                <span class="sym">&#9670;</span> Informações Maçônicas
+            </div>
+            <div class="grid">
+                <div class="field">
+                    <label>Loja</label>
+                    <select id="loja">
+                        <option value="">— Selecione —</option>
+                        <option value="ARLS">ARLS</option>
+                        <option value="ARB">ARB</option>
+                        <option value="GLESP">GLESP</option>
+                        <option value="GOB">GOB</option>
+                        <option value="COMAB">COMAB</option>
+                        <option value="CMSB">CMSB</option>
+                        <option value="Outra">Outra</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Nº da Loja</label>
+                    <input type="text" id="lojaNumero" placeholder="Ex: 123">
+                </div>
+                <div class="field full">
+                    <label>Potência</label>
+                    <input type="text" id="potencia" placeholder="Ex: 33">
+                </div>
+            </div>
+
+            <!-- PEDIDO -->
+            <div class="section-title">
+                <span class="sym">&#9670;</span> Pedido
+            </div>
+            <div class="grid">
+                <div class="field full">
+                    <label>Quantidade de exemplares <span class="req">*</span></label>
+                    <input type="number" id="quantidade" min="1" value="1" required>
+                    <small>Cada volume: <strong>R$ 100,00</strong> &nbsp;|&nbsp; Frete grátis a partir de <strong>3 unidades</strong></small>
+                </div>
+            </div>
+
+            <button type="button" class="btn-primary" id="btnCalc">Calcular valor total (incluindo frete)</button>
+
+            <!-- RESULTADO -->
+            <div id="resultBox">
+                <h3>&#9670; Resumo do Pedido</h3>
+                <div id="shippingOptions"></div>
+
+                <div id="subtotalLine" class="total-line"></div>
+
+                <div class="pix-box">
+                    <strong>Pagamento via PIX</strong>
+                    <span class="chave">contato@qcsp333.gov.br</span>
+                    <div class="note">Após o pagamento, clique no botão abaixo para enviar o comprovante e confirmar o pedido.</div>
+                </div>
+
+                <button type="button" class="btn-whats" id="btnWhats">
+                    Enviar pedido pelo WhatsApp
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ===== CONFIG =====
+            const ORIGIN_CEP = '18025160';
+            const PRECO_UNITARIO = 100;
+            const PESO_UNITARIO_KG = 0.6;
+            const ALTURA_UNITARIA_CM = 2;
+            const LARGURA_CM = 16;
+            const COMPRIMENTO_CM = 23;
+            const SHEET_MONKEY_URL = 'https://api.sheetmonkey.io/form/jPMBQbTa6pU2ZF2wRDQcuX';
+            const WHATSAPP_NUMERO = '5512991513554';
+            const PIX_CHAVE = 'contato@qcsp333.gov.br';
+
+            // ===== STATE =====
+            let freteSelecionado = 0;
+            let tipoFreteSelecionado = '';
+            let freteOptions = [];
+
+            // ===== DOM REFS =====
+            const $ = id => document.getElementById(id);
+            const cep = $('cep');
+            const cepStatus = $('cepStatus');
+            const logradouro = $('logradouro');
+            const bairro = $('bairro');
+            const cidade = $('cidade');
+            const estado = $('estado');
+            const quantidade = $('quantidade');
+            const resultBox = $('resultBox');
+            const shippingOptions = $('shippingOptions');
+            const subtotalLine = $('subtotalLine');
+            const btnCalc = $('btnCalc');
+            const btnWhats = $('btnWhats');
+
+            // ===== MASCARA CEP =====
+            cep.addEventListener('input', function() {
+                let v = this.value.replace(/\D/g, '');
+                if (v.length > 5) {
+                    v = v.slice(0, 5) + '-' + v.slice(5, 8);
+                }
+                this.value = v;
+                if (v.replace(/\D/g, '').length === 8) {
+                    buscarCep(v.replace(/\D/g, ''));
+                }
+            });
+
+            // ===== MASCARA TELEFONE =====
+            const tel = $('telefone');
+            tel.addEventListener('input', function() {
+                let v = this.value.replace(/\D/g, '').slice(0, 11);
+                if (v.length <= 2) {
+                    this.value = v.length ? '(' + v : '';
+                } else if (v.length <= 7) {
+                    this.value = '(' + v.slice(0, 2) + ') ' + v.slice(2);
+                } else {
+                    this.value = '(' + v.slice(0, 2) + ') ' + v.slice(2, 7) + '-' + v.slice(7);
+                }
+            });
+
+            // ===== BUSCA CEP (ViaCEP) =====
+            async function buscarCep(cepNum) {
+                cepStatus.textContent = 'Buscando endereço...';
+                try {
+                    const r = await fetch('https://viacep.com.br/ws/' + cepNum + '/json/');
+                    const d = await r.json();
+                    if (d.erro) throw new Error('CEP não encontrado');
+                    logradouro.value = d.logradouro || '';
+                    bairro.value = d.bairro || '';
+                    cidade.value = d.localidade || '';
+                    estado.value = d.uf || '';
+                    cepStatus.textContent = '';
+                } catch (e) {
+                    cepStatus.textContent = 'CEP não encontrado. Preencha manualmente.';
+                }
+            }
+
+            // ===== CALCULAR FRETE =====
+            btnCalc.addEventListener('click', async function() {
+                const cepNum = cep.value.replace(/\D/g, '');
+                const qtd = parseInt(quantidade.value) || 0;
+
+                if (cepNum.length !== 8) {
+                    alert('Informe um CEP válido com 8 dígitos.');
                     return;
                 }
-                document.getElementById('logradouro').value = data.logradouro;
-                document.getElementById('cidade').value = data.localidade;
-                document.getElementById('estado').value = data.uf;
-            })
-            .catch(err => console.error('Erro ao buscar CEP:', err));
-    }
+                if (qtd < 1) {
+                    alert('Informe a quantidade de exemplares (mínimo 1).');
+                    return;
+                }
 
-    document.getElementById('cep').addEventListener('blur', buscarCEP);
+                resultBox.style.display = 'block';
+                shippingOptions.innerHTML = '<div class="loader">Calculando frete...</div>';
 
-    // Calculate
-    document.getElementById('btnCalcular').addEventListener('click', function() {
-        const qty = parseInt(document.getElementById('quantidade').value);
-        if (!qty || qty < 1) {
-            alert('Informe a quantidade desejada.');
-            return;
-        }
-        const estado = document.getElementById('estado').value.toUpperCase();
-        if (!estado) {
-            alert('Preencha o CEP para definir o estado de destino.');
-            return;
-        }
+                const subtotal = qtd * PRECO_UNITARIO;
 
-        const precoLivro = 100;
-        const subtotal = qty * precoLivro;
-        let frete = 0;
-        if (qty >= 3) {
-            frete = 0;
-        } else {
-            const pesoTotal = qty * 0.6; // kg
-            let taxa1, taxa2;
-            if (estado === 'SP') {
-                taxa1 = 13.50; taxa2 = 16.80;
-            } else if (['RS','SC','PR','MG','ES','RJ'].includes(estado)) {
-                taxa1 = 17.20; taxa2 = 22.40;
-            } else {
-                taxa1 = 21.50; taxa2 = 27.90;
-            }
-            frete = pesoTotal <= 1 ? taxa1 : taxa2;
-            frete = Math.ceil(frete / 5) * 5; // arredondar para múltiplo de 5 superior
-        }
+                if (qtd >= 3) {
+                    freteSelecionado = 0;
+                    tipoFreteSelecionado = 'Frete Grátis (3+ unid.)';
+                    freteOptions = [];
+                    shippingOptions.innerHTML =
+                        '<div class="ship-opt active" style="cursor:default">' +
+                        '<span class="name">Frete Grátis</span>' +
+                        '<span class="price">R$ 0,00</span>' +
+                        '</div>' +
+                        '<div style="font-size:0.85rem;color:#888;margin-top:4px">Promoção válida para 3 ou mais exemplares.</div>';
+                    atualizarTotal(subtotal);
+                    resultBox.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
 
-        const total = subtotal + frete;
+                // < 3 unidades: consultar Correios
+                const pesoTotal = (qtd * PESO_UNITARIO_KG).toFixed(1);
+                const alturaTotal = qtd * ALTURA_UNITARIA_CM;
 
-        document.getElementById('subtotal').innerText = `Subtotal (${qty} livros): R$ ${subtotal.toFixed(2)}`;
-        document.getElementById('frete').innerText = `Frete: R$ ${frete.toFixed(2)}`;
-        document.getElementById('total').innerText = `Total: R$ ${total.toFixed(2)}`;
+                const params = new URLSearchParams({
+                    nCdEmpresa: '',
+                    sDsSenha: '',
+                    nCdServico: '04510,04014',
+                    sCepOrigem: ORIGIN_CEP,
+                    sCepDestino: cepNum,
+                    nVlPeso: pesoTotal,
+                    nCdFormato: '1',
+                    nVlComprimento: String(COMPRIMENTO_CM),
+                    nVlAltura: String(alturaTotal),
+                    nVlLargura: String(LARGURA_CM),
+                    nVlDiametro: '0',
+                    sCdMaoPropria: 'n',
+                    nVlValorDeclarado: '0',
+                    sCdAvisoRecebimento: 'n'
+                });
 
-        document.getElementById('totals').style.display = 'block';
-        document.getElementById('btnWhatsApp').style.display = 'block';
-    });
+                const soapUrl = 'http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo?' + params.toString();
 
-    // WhatsApp submit
-    document.getElementById('btnWhatsApp').addEventListener('click', async function() {
-        const form = document.getElementById('orderForm');
-        const nome = document.getElementById('nome').value;
-        const email = document.getElementById('email').value;
-        const telefone = document.getElementById('telefone').value;
-        const cep = document.getElementById('cep').value;
-        const logradouro = document.getElementById('logradouro').value;
-        const numero = document.getElementById('numero').value;
-        const complemento = document.getElementById('complemento').value;
-        const cidade = document.getElementById('cidade').value;
-        const estado = document.getElementById('estado').value;
-        const loja = document.getElementById('loja').value;
-        const numeroLoja = document.getElementById('numeroLoja').value;
-        const potencia = document.getElementById('potencia').value;
-        const quantidade = document.getElementById('quantidade').value;
-        const subtotal = document.getElementById('subtotal').innerText;
-        const frete = document.getElementById('frete').innerText;
-        const total = document.getElementById('total').innerText;
+                try {
+                    const proxyResp = await fetch('https://corsproxy.io/?' + encodeURIComponent(soapUrl));
+                    const xmlText = await proxyResp.text();
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(xmlText, 'text/xml');
+                    const servicos = xml.querySelectorAll('cServico');
 
-        // Enviar para Sheet Monkey
-        const data = {
-            nome, email, telefone, cep, logradouro, numero, complemento, cidade, estado,
-            loja, numeroLoja, potencia, quantidade, subtotal, frete, total
-        };
+                    if (!servicos.length) {
+                        throw new Error('Resposta vazia dos Correios');
+                    }
 
-        try {
-            await fetch('https://api.sheetmonkey.io/form/jPMBQbTa6pU2ZF2wRDQcuX', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                    let html = '<div style="margin-bottom:8px;font-size:0.9rem;color:#555">Selecione a modalidade de frete:</div>';
+                    freteOptions = [];
+                    let primeiroValido = null;
+
+                    servicos.forEach(function(s, idx) {
+                        const codigo = s.querySelector('Codigo')?.textContent || '';
+                        const valorStr = s.querySelector('Valor')?.textContent || '0,00';
+                        const prazo = s.querySelector('PrazoEntrega')?.textContent || '-';
+                        const erro = s.querySelector('Erro')?.textContent || '0';
+
+                        if (erro !== '0') return;
+
+                        const valor = parseFloat(valorStr.replace(',', '.'));
+                        const nome = codigo === '04510' ? 'PAC (Remessa Registrada Simples)' : 'SEDEX';
+                        freteOptions.push({ codigo, nome, valor, prazo });
+
+                        if (!primeiroValido) {
+                            primeiroValido = { codigo, nome, valor, prazo };
+                        }
+                    });
+
+                    if (!freteOptions.length) {
+                        throw new Error('Nenhuma opção de frete disponível para este CEP.');
+                    }
+
+                    // Selecionar o primeiro por padrão
+                    freteSelecionado = freteOptions[0].valor;
+                    tipoFreteSelecionado = freteOptions[0].nome;
+
+                    freteOptions.forEach(function(opt, idx) {
+                        const ativo = idx === 0 ? 'active' : '';
+                        html += '<div class="ship-opt ' + ativo + '" data-idx="' + idx + '">' +
+                            '<span class="name">' + opt.nome + '</span>' +
+                            '<span style="font-size:0.85rem;color:#888;margin-right:12px">' + opt.prazo + ' dia(s) útil(eis)</span>' +
+                            '<span class="price">R$ ' + opt.valor.toFixed(2).replace('.', ',') + '</span>' +
+                            '</div>';
+                    });
+
+                    shippingOptions.innerHTML = html;
+
+                    // Eventos de clique nas opções
+                    document.querySelectorAll('.ship-opt').forEach(function(el) {
+                        el.addEventListener('click', function() {
+                            document.querySelectorAll('.ship-opt').forEach(function(e) {
+                                e.classList.remove('active');
+                            });
+                            this.classList.add('active');
+                            const idx = parseInt(this.dataset.idx);
+                            freteSelecionado = freteOptions[idx].valor;
+                            tipoFreteSelecionado = freteOptions[idx].nome;
+                            atualizarTotal(subtotal);
+                        });
+                    });
+
+                    atualizarTotal(subtotal);
+
+                } catch (e) {
+                    shippingOptions.innerHTML = '<div style="color:' + getComputedStyle(document.documentElement).getPropertyValue('--error').trim() + '">' +
+                        'Não foi possível calcular o frete automaticamente. ' +
+                        'Entre em contato pelo WhatsApp para obter o valor do frete para seu CEP.</div>';
+                    freteSelecionado = 0;
+                    tipoFreteSelecionado = 'A consultar';
+                    atualizarTotal(subtotal);
+                }
+
+                resultBox.scrollIntoView({ behavior: 'smooth' });
             });
-        } catch (e) {
-            console.error('Erro ao enviar para Sheet Monkey:', e);
-        }
 
-        // Montar mensagem WhatsApp
-        const mensagem = `Olá! Gostaria de fazer um pedido do Ars Regum Vol 4.\n\n` +
-            `*Nome:* ${nome}\n` +
-            `*E-mail:* ${email}\n` +
-            `*Telefone:* ${telefone}\n` +
-            `*Endereço:* ${logradouro}, ${numero}${complemento ? ', ' + complemento : ''} - ${cidade}/${estado} - CEP ${cep}\n` +
-            `*Loja:* ${loja || 'Não informado'} ${numeroLoja ? 'Nº ' + numeroLoja : ''} - Potência: ${potencia || 'Não informada'}\n` +
-            `*Quantidade:* ${quantidade} exemplar(es)\n` +
-            `*Subtotal:* ${subtotal}\n` +
-            `*Frete:* ${frete}\n` +
-            `*Total:* ${total}\n\n` +
-            `Pagamento via PIX para a chave: *contato@qcsp333.com.br*\n` +
-            `Após o pagamento, enviar comprovante para confirmar o pedido.`;
+            // ===== ATUALIZAR TOTAL =====
+            function atualizarTotal(subtotal) {
+                const total = subtotal + freteSelecionado;
+                subtotalLine.innerHTML =
+                    'Subtotal (' + quantidade.value + ' un.): R$ ' + subtotal.toFixed(2).replace('.', ',') + '<br>' +
+                    'Frete (' + tipoFreteSelecionado + '): R$ ' + freteSelecionado.toFixed(2).replace('.', ',') + '<br>' +
+                    '<span style="font-size:1.3rem">Total: R$ ' + total.toFixed(2).replace('.', ',') + '</span>';
+            }
 
-        const url = `https://wa.me/5512991513554?text=${encodeURIComponent(mensagem)}`;
-        window.open(url, '_blank');
-    });
-</script>
+            // ===== ENVIAR PEDIDO VIA WHATSAPP =====
+            btnWhats.addEventListener('click', async function() {
+                const nome = $('nome').value.trim();
+                const email = $('email').value.trim();
+                const telefone = tel.value.trim();
+                const cepVal = cep.value.trim();
+                const log = logradouro.value.trim();
+                const num = $('numero').value.trim();
+                const comp = $('complemento').value.trim();
+                const bair = bairro.value.trim();
+                const cid = cidade.value.trim();
+                const est = estado.value.trim();
+                const loja = $('loja').value;
+                const lojaNum = $('lojaNumero').value.trim();
+                const pot = $('potencia').value.trim();
+                const qtd = parseInt(quantidade.value) || 0;
+
+                if (!nome || !telefone || !log || !num || !cid || !est || qtd < 1) {
+                    alert('Preencha todos os campos obrigatórios antes de enviar.');
+                    return;
+                }
+
+                const subtotal = qtd * PRECO_UNITARIO;
+                const total = subtotal + freteSelecionado;
+
+                // 1) Enviar para Sheet Monkey
+                const payload = {
+                    Data: new Date().toLocaleDateString('pt-BR'),
+                    Nome: nome,
+                    Email: email,
+                    Telefone: telefone,
+                    CEP: cepVal,
+                    Logradouro: log + ', ' + num + (comp ? ' - ' + comp : ''),
+                    Bairro: bair,
+                    Cidade: cid,
+                    Estado: est,
+                    Loja: loja,
+                    LojaNumero: lojaNum,
+                    Potencia: pot,
+                    Quantidade: qtd,
+                    ValorLivros: subtotal,
+                    ModalidadeFrete: tipoFreteSelecionado,
+                    ValorFrete: freteSelecionado,
+                    TotalGeral: total,
+                    StatusPagamento: 'Aguardando'
+                };
+
+                try {
+                    await fetch(SHEET_MONKEY_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } catch (e) {
+                    console.error('SheetMonkey error:', e);
+                }
+
+                // 2) Montar mensagem WhatsApp
+                const linha = '%0A';
+                const msg =
+                    '*NOVO PEDIDO - ARS REGUM VOL. 4*' + linha + linha +
+                    '*Dados Pessoais*' + linha +
+                    'Nome: ' + nome + linha +
+                    'Tel: ' + telefone + linha +
+                    (email ? 'E-mail: ' + email + linha : '') + linha +
+                    '*Endereço de Entrega*' + linha +
+                    log + ', ' + num + (comp ? ' - ' + comp : '') + linha +
+                    (bair ? bair + ' - ' : '') + cid + '/' + est + linha +
+                    'CEP: ' + cepVal + linha + linha +
+                    (loja ? '*Loja:* ' + loja + (lojaNum ? ' nº ' + lojaNum : '') + (pot ? ' (' + pot + ')' : '') + linha + linha : '') +
+                    '*Pedido*' + linha +
+                    qtd + ' exemplar(es) x R$ 100,00 = R$ ' + subtotal.toFixed(2).replace('.', ',') + linha +
+                    'Frete: ' + tipoFreteSelecionado + ' = R$ ' + freteSelecionado.toFixed(2).replace('.', ',') + linha +
+                    '*TOTAL: R$ ' + total.toFixed(2).replace('.', ',') + '*' + linha + linha +
+                    '*Pagamento via PIX*' + linha +
+                    'Chave: ' + PIX_CHAVE + linha + linha +
+                    '_Segue em anexo o comprovante de pagamento. ' +
+                    'No nome de ' + nome + '._';
+
+                const url = 'https://wa.me/' + WHATSAPP_NUMERO + '?text=' + msg;
+                window.open(url, '_blank');
+            });
+
+        })();
+    </script>
+
 </body>
 </html>
