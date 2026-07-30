@@ -19,7 +19,6 @@
             --text: #333;
             --white: #fff;
             --error: #b71c1c;
-            --success: #27ae60;
         }
 
         body {
@@ -45,17 +44,6 @@
             color: var(--gold);
             padding: 45px 20px 35px;
             text-align: center;
-            position: relative;
-        }
-
-        header::after {
-            content: "\u2726 \u2726 \u2726";
-            display: block;
-            color: var(--gold);
-            font-size: 1.2rem;
-            letter-spacing: 8px;
-            margin-top: 10px;
-            opacity: 0.6;
         }
 
         header h1 {
@@ -118,6 +106,12 @@
 
         .field label .req {
             color: var(--error);
+        }
+
+        .field label .opt {
+            font-weight: 400;
+            color: #888;
+            font-size: 0.82rem;
         }
 
         .field input,
@@ -303,12 +297,6 @@
             margin-top: 3px;
         }
 
-        .msg-erro {
-            color: var(--error);
-            font-size: 0.85rem;
-            margin-top: 3px;
-        }
-
         @media (max-width: 600px) {
             .grid {
                 grid-template-columns: 1fr;
@@ -397,24 +385,15 @@
             </div>
             <div class="grid">
                 <div class="field">
-                    <label>Loja</label>
-                    <select id="loja">
-                        <option value="">— Selecione —</option>
-                        <option value="ARLS">ARLS</option>
-                        <option value="ARB">ARB</option>
-                        <option value="GLESP">GLESP</option>
-                        <option value="GOB">GOB</option>
-                        <option value="COMAB">COMAB</option>
-                        <option value="CMSB">CMSB</option>
-                        <option value="Outra">Outra</option>
-                    </select>
+                    <label>Loja <span class="opt">(opcional)</span></label>
+                    <input type="text" id="loja" placeholder="Ex: ARLS, ARB, GOB, etc.">
                 </div>
                 <div class="field">
-                    <label>Nº da Loja</label>
+                    <label>Nº da Loja <span class="opt">(opcional)</span></label>
                     <input type="text" id="lojaNumero" placeholder="Ex: 123">
                 </div>
                 <div class="field full">
-                    <label>Potência</label>
+                    <label>Potência <span class="opt">(opcional)</span></label>
                     <input type="text" id="potencia" placeholder="Ex: 33">
                 </div>
             </div>
@@ -547,10 +526,11 @@
                 }
 
                 resultBox.style.display = 'block';
-                shippingOptions.innerHTML = '<div class="loader">Calculando frete...</div>';
+                shippingOptions.innerHTML = '<div class="loader">Calculando...</div>';
 
                 const subtotal = qtd * PRECO_UNITARIO;
 
+                // Frete grátis para 3 ou mais exemplares
                 if (qtd >= 3) {
                     freteSelecionado = 0;
                     tipoFreteSelecionado = 'Frete Grátis (3+ unid.)';
@@ -560,13 +540,13 @@
                         '<span class="name">Frete Grátis</span>' +
                         '<span class="price">R$ 0,00</span>' +
                         '</div>' +
-                        '<div style="font-size:0.85rem;color:#888;margin-top:4px">Promoção válida para 3 ou mais exemplares.</div>';
+                        '<div style="font-size:0.85rem;color:#888;margin-top:4px">Frete cortesia para pedidos com 3 ou mais exemplares.</div>';
                     atualizarTotal(subtotal);
                     resultBox.scrollIntoView({ behavior: 'smooth' });
                     return;
                 }
 
-                // < 3 unidades: consultar Correios
+                // Menos de 3 unidades: consultar Correios
                 const pesoTotal = (qtd * PESO_UNITARIO_KG).toFixed(1);
                 const alturaTotal = qtd * ALTURA_UNITARIA_CM;
 
@@ -602,9 +582,8 @@
 
                     let html = '<div style="margin-bottom:8px;font-size:0.9rem;color:#555">Selecione a modalidade de frete:</div>';
                     freteOptions = [];
-                    let primeiroValido = null;
 
-                    servicos.forEach(function(s, idx) {
+                    servicos.forEach(function(s) {
                         const codigo = s.querySelector('Codigo')?.textContent || '';
                         const valorStr = s.querySelector('Valor')?.textContent || '0,00';
                         const prazo = s.querySelector('PrazoEntrega')?.textContent || '-';
@@ -615,17 +594,12 @@
                         const valor = parseFloat(valorStr.replace(',', '.'));
                         const nome = codigo === '04510' ? 'PAC (Remessa Registrada Simples)' : 'SEDEX';
                         freteOptions.push({ codigo, nome, valor, prazo });
-
-                        if (!primeiroValido) {
-                            primeiroValido = { codigo, nome, valor, prazo };
-                        }
                     });
 
                     if (!freteOptions.length) {
                         throw new Error('Nenhuma opção de frete disponível para este CEP.');
                     }
 
-                    // Selecionar o primeiro por padrão
                     freteSelecionado = freteOptions[0].valor;
                     tipoFreteSelecionado = freteOptions[0].nome;
 
@@ -640,7 +614,6 @@
 
                     shippingOptions.innerHTML = html;
 
-                    // Eventos de clique nas opções
                     document.querySelectorAll('.ship-opt').forEach(function(el) {
                         el.addEventListener('click', function() {
                             document.querySelectorAll('.ship-opt').forEach(function(e) {
@@ -657,7 +630,7 @@
                     atualizarTotal(subtotal);
 
                 } catch (e) {
-                    shippingOptions.innerHTML = '<div style="color:' + getComputedStyle(document.documentElement).getPropertyValue('--error').trim() + '">' +
+                    shippingOptions.innerHTML = '<div style="color: var(--error)">' +
                         'Não foi possível calcular o frete automaticamente. ' +
                         'Entre em contato pelo WhatsApp para obter o valor do frete para seu CEP.</div>';
                     freteSelecionado = 0;
@@ -689,7 +662,7 @@
                 const bair = bairro.value.trim();
                 const cid = cidade.value.trim();
                 const est = estado.value.trim();
-                const loja = $('loja').value;
+                const loja = $('loja').value.trim();
                 const lojaNum = $('lojaNumero').value.trim();
                 const pot = $('potencia').value.trim();
                 const qtd = parseInt(quantidade.value) || 0;
@@ -746,7 +719,7 @@
                     log + ', ' + num + (comp ? ' - ' + comp : '') + linha +
                     (bair ? bair + ' - ' : '') + cid + '/' + est + linha +
                     'CEP: ' + cepVal + linha + linha +
-                    (loja ? '*Loja:* ' + loja + (lojaNum ? ' nº ' + lojaNum : '') + (pot ? ' (' + pot + ')' : '') + linha + linha : '') +
+                    (loja ? '*Loja:* ' + loja + (lojaNum ? ' n ' + lojaNum : '') + (pot ? ' (' + pot + ')' : '') + linha + linha : '') +
                     '*Pedido*' + linha +
                     qtd + ' exemplar(es) x R$ 100,00 = R$ ' + subtotal.toFixed(2).replace('.', ',') + linha +
                     'Frete: ' + tipoFreteSelecionado + ' = R$ ' + freteSelecionado.toFixed(2).replace('.', ',') + linha +
